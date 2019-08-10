@@ -40,6 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'rest_framework',
+
+    'src.api'
 ]
 
 MIDDLEWARE = [
@@ -103,6 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+WSGI_APPLICATION = 'biserver.wsgi.application'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
