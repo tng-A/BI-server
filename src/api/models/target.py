@@ -9,39 +9,63 @@ from .value_centre import ValueCentre
 from .product import Product
 from .income_stream import IncomeStream
 
-
-class Target(CommonFieldsMixin):
-    """ Target model """
-
+class ObjectiveMixin(CommonFieldsMixin):
     name = models.CharField(max_length=50, null=False)
     description = models.CharField(max_length=100, null=True, blank=True)
-    metric = models.OneToOneField(Metric, on_delete=models.PROTECT)
-    amount = models.IntegerField()
-    company = models.ForeignKey(
-        Company,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        related_name='targets'
-    )
+    amount = models.IntegerField(null=False, blank=False)
+
+
+    class Meta:
+        abstract = True
+
+
+class ValueCentreTarget(ObjectiveMixin):
     value_centre = models.ForeignKey(
         ValueCentre,
         on_delete=models.CASCADE,
-        null=True,
-        blank=True,
+        null=False,
+        blank=False,
         related_name='targets'
     )
+    metric = models.ForeignKey(
+        Metric,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name='value_centres'
+    )
+    
+
+
+class ProductTarget(ObjectiveMixin):
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
-        null=True,
-        blank=True,
+        null=False,
+        blank=False,
         related_name='targets'
     )
+    metric = models.ForeignKey(
+        Metric,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name='products',
+    )
+
+
+class IncomeStreamTarget(ObjectiveMixin):
     income_stream = models.ForeignKey(
         IncomeStream,
         on_delete=models.CASCADE,
-        null=True,
-        blank=True,
+        null=False,
+        blank=False,
         related_name='targets'
+    )
+    metric = models.ForeignKey(
+        Metric,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name='income_streams',
     )
