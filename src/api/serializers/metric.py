@@ -14,11 +14,7 @@ class MetricSerializer(serializers.ModelSerializer):
             message='The metric name already exists. Kindly try another.'
         )]
     )
-    company = serializers.SerializerMethodField()
-
-    def get_company(self,obj):
-        return obj.company.name
 
     class Meta:
         model = Metric
-        fields = ['name', 'company']
+        fields = ['name',]

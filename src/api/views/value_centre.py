@@ -17,13 +17,15 @@ class ValueCentreListCreateAPIView(ListCreateAPIView):
     serializer_class = ValueCentreSerializer
     queryset = ValueCentre.objects.all()
 
-    def get_queryset(self):
+    def list(self, request, *args, **kwargs):
         try:
             subsidiary = Subsidiary.objects.get(pk=self.kwargs['subsidiary_id'])
         except Subsidiary.DoesNotExist:
             message = 'Subsidiary does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
-        return subsidiary.value_centres.all()
+        queryset = subsidiary.value_centres.all()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
         try:
