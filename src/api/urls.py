@@ -10,6 +10,11 @@ from .views.target import (
     ProductTargettListCreateAPIView,
     IncomeStreamTargetListCreateAPIView
 )
+from .views.okr import (
+    ValueCentreOKRListCreateAPIView,
+    ProductOKRListCreateAPIView,
+    IncomeStreamOKRListCreateAPIView
+)
 
 
 urlpatterns = [
@@ -19,7 +24,10 @@ urlpatterns = [
     path('product/<int:value_centre_id>/', ProductListCreateAPIView.as_view(), name='product'),
     path('income_stream/<int:product_id>/', IncomeStreamListCreateAPIView.as_view(), name='income_stream'),
     path('metric/', MetricListCreateAPIView.as_view(), name='metric'),
-    path('v_c_target/<int:value_centre_id>/', ValueCentreTargetListCreateAPIView.as_view(), name='v_c_target'),
+    path('value_centre_target/<int:value_centre_id>/', ValueCentreTargetListCreateAPIView.as_view(), name='v_c_target'),
     path('product_target/<int:product_id>/', ProductTargettListCreateAPIView.as_view(), name='product_target'),
     path('income_stream_target/<int:income_stream_id>/', IncomeStreamTargetListCreateAPIView.as_view(), name='income_stream_target'),
+    path('value_centre_okr/<int:value_centre_id>/', ValueCentreOKRListCreateAPIView.as_view(), name='v_c_okr'),
+    path('product_okr/<int:product_id>/', ProductOKRListCreateAPIView.as_view(), name='product_okr'),
+    path('income_stream_okr/<int:income_stream_id>/', IncomeStreamOKRListCreateAPIView.as_view(), name='income_stream_okr'),
 ]
