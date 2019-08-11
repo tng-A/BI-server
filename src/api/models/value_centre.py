@@ -14,5 +14,5 @@ class ValueCentre(CommonFieldsMixin):
     subsidiary = models.ForeignKey(
         Subsidiary,
         on_delete=models.CASCADE,
-        related_name='subsidiaries'
+        related_name='value_centres'
     )
