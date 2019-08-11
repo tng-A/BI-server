@@ -30,7 +30,8 @@ class ValueCentreOKR(OKRMixin):
         ValueCentre,
         on_delete=models.CASCADE,
         null=False,
-        blank=False
+        blank=False,
+        related_name='okrs'
     )
     
 
@@ -39,7 +40,8 @@ class ProductOKR(OKRMixin):
         Product,
         on_delete=models.CASCADE,
         null=False,
-        blank=False
+        blank=False,
+        related_name='okrs'
     )
 
 
