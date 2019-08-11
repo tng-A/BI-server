@@ -17,14 +17,15 @@ class IncomeStreamListCreateAPIView(ListCreateAPIView):
     serializer_class = IncomeStreamSerializer
     queryset = IncomeStream.objects.all()
 
-    def get_queryset(self):
+    def list(self, request, *args, **kwargs):
         try:
             product = Product.objects.get(pk=self.kwargs['product_id'])
         except Product.DoesNotExist:
             message = 'Product does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
-        return product.income_streams.all()
-
+        queryset = product.income_streams.all()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
         try:

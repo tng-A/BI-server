@@ -29,13 +29,15 @@ class IncomeStreamTargetListCreateAPIView(ListCreateAPIView):
     serializer_class = IncomeStreamTargetSerializer
     queryset = IncomeStreamTarget.objects.all()
 
-    def get_queryset(self):
+    def list(self, request, *args, **kwargs):
         try:
             income_stream = IncomeStream.objects.get(pk=self.kwargs['income_stream_id'])
-        except Product.DoesNotExist:
+        except IncomeStream.DoesNotExist:
             message = 'IncomeStream does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
-        return income_stream.targets.all()
+        queryset = income_stream.targets.all()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     
     def create(self, request, *args, **kwargs):
@@ -72,15 +74,16 @@ class ProductTargettListCreateAPIView(ListCreateAPIView):
     serializer_class = ProductTargetSerializer
     queryset = ProductTarget.objects.all()
 
-    def get_queryset(self):
+    def list(self, request, *args, **kwargs):
         try:
             product = Product.objects.get(pk=self.kwargs['product_id'])
         except Product.DoesNotExist:
             message = 'Product does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
-        return product.targets.all()
+        queryset = product.targets.all()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
-    
     def create(self, request, *args, **kwargs):
         try:
             product = Product.objects.get(pk=self.kwargs['product_id'])
@@ -115,14 +118,15 @@ class ValueCentreTargetListCreateAPIView(ListCreateAPIView):
     serializer_class = ValueCentreTargetSerializer
     queryset = ValueCentreTarget.objects.all()
 
-    def get_queryset(self):
+    def list(self, request, *args, **kwargs):
         try:
             value_centre = ValueCentre.objects.get(pk=self.kwargs['value_centre_id'])
         except ValueCentre.DoesNotExist:
             message = 'ValueCentre does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
-        return value_centre.targets.all()
-
+        queryset = value_centre.targets.all()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
     
     def create(self, request, *args, **kwargs):
         try:

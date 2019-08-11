@@ -17,13 +17,15 @@ class SubsidiaryListCreateAPIView(ListCreateAPIView):
     serializer_class = SubsidiarySerializer
     queryset = Subsidiary.objects.all()
 
-    def get_queryset(self):
+    def list(self, request, *args, **kwargs):
         try:
-            company = Company.objects.get(pk=self.kwargs['company_id'])
+            company = Company.objects.get(pk=kwargs['company_id'])
         except Company.DoesNotExist:
             message = 'Company does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
-        return company.subsidiaries.all()
+        queryset = company.subsidiaries.all()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
         try:
