@@ -64,5 +64,5 @@ class IncomeStreamOKRSerializer(serializers.ModelSerializer):
         """ Meta options"""
         model = IncomeStreamOKR
         fields = ['name', 'description', 'metric',
-                    'income_stream', 'amount']
+                    'income_stream', 'amount', 'period']
 

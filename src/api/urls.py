@@ -3,7 +3,9 @@ from .views.company import CompanyListCreateAPIView
 from .views.subsidiary import SubsidiaryListCreateAPIView
 from .views.value_centre import ValueCentreListCreateAPIView
 from .views.product import ProductListCreateAPIView
-from .views.income_stream import IncomeStreamListCreateAPIView
+from .views.income_stream import (
+    IncomeStreamListCreateAPIView
+)
 from .views.metric import MetricListCreateAPIView
 from .views.target import (
     ValueCentreTargetListCreateAPIView,
@@ -15,7 +17,9 @@ from .views.okr import (
     ProductOKRListCreateAPIView,
     IncomeStreamOKRListCreateAPIView
 )
-
+from .views.analytics import (
+    IncomeStreamTrends
+)
 
 urlpatterns = [
     path('company/', CompanyListCreateAPIView.as_view(), name='company'),
@@ -30,4 +34,8 @@ urlpatterns = [
     path('value_centre_okr/<int:value_centre_id>/', ValueCentreOKRListCreateAPIView.as_view(), name='v_c_okr'),
     path('product_okr/<int:product_id>/', ProductOKRListCreateAPIView.as_view(), name='product_okr'),
     path('income_stream_okr/<int:income_stream_id>/', IncomeStreamOKRListCreateAPIView.as_view(), name='income_stream_okr'),
+    path(
+        'income_stream_trends/<int:income_stream_id>/<str:start>/<str:end>',
+        IncomeStreamTrends.as_view(),
+        name='income_stream_trends'),
 ]
