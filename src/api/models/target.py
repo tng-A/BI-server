@@ -13,7 +13,8 @@ class ObjectiveMixin(CommonFieldsMixin):
     name = models.CharField(max_length=50, null=False)
     description = models.CharField(max_length=100, null=True, blank=True)
     amount = models.IntegerField(null=False, blank=False)
-
+    start = models.CharField(max_length=100, null=False, blank=False, default='placeholder')
+    end = models.CharField(max_length=100, null=False, blank=False, default='placeholder')
 
     class Meta:
         abstract = True
