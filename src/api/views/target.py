@@ -47,14 +47,14 @@ class IncomeStreamTargetListCreateAPIView(ListCreateAPIView):
             message = 'IncomeStream does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         data = request.data
-        exists = IncomeStreamTarget.objects.all().filter(
-            name__icontains=data['name'],
-            metric__name__icontains=data['metric'],
-            income_stream__name__iexact=income_stream.name
-        )
-        if len(exists) > 0:
-            message = 'That income_stream objective already exists'
-            return Response(message, status=status.HTTP_400_BAD_REQUEST)
+        # exists = IncomeStreamTarget.objects.all().filter(
+        #     name__icontains=data['name'],
+        #     metric__name__icontains=data['metric'],
+        #     income_stream__name__iexact=income_stream.name
+        # )
+        # if len(exists) > 0:
+        #     message = 'That income_stream objective already exists'
+        #     return Response(message, status=status.HTTP_400_BAD_REQUEST)
         metric, _ = Metric.objects.get_or_create(name=data['metric'])
         serializer_context = {
             'request': request,
