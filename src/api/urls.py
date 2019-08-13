@@ -17,8 +17,9 @@ from .views.okr import (
     ProductOKRListCreateAPIView,
     IncomeStreamOKRListCreateAPIView
 )
-from .views.analytics import (
-    IncomeStreamTrends
+from .analytics import (
+    IncomeStreamTrends,
+    IncomeStreamCard
 )
 
 urlpatterns = [
@@ -38,4 +39,8 @@ urlpatterns = [
         'income_stream_trends/<int:income_stream_id>/<str:start>/<str:end>',
         IncomeStreamTrends.as_view(),
         name='income_stream_trends'),
+    path(
+        'income_stream_card/<int:income_stream_id>/<str:start>/<str:end>',
+        IncomeStreamCard.as_view(),
+        name='income_stream_card'),
 ]
