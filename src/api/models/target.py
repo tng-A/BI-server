@@ -8,6 +8,9 @@ from .company import Company
 from .value_centre import ValueCentre
 from .product import Product
 from .income_stream import IncomeStream
+from .department import Department
+from .revenue_type import RevenueType
+from .revenue_stream import RevenueStream
 
 class ObjectiveMixin(CommonFieldsMixin):
     name = models.CharField(max_length=50, null=False)
@@ -33,9 +36,25 @@ class ValueCentreTarget(ObjectiveMixin):
         on_delete=models.CASCADE,
         null=False,
         blank=False,
-        related_name='value_centres'
+        related_name='value_centre_targets'
     )
+  
     
+class DepartmentTarget(ObjectiveMixin):
+    department = models.ForeignKey(
+        Department,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name='targets'
+    )
+    metric = models.ForeignKey(
+        Metric,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name='department_targets'
+    )
 
 
 class ProductTarget(ObjectiveMixin):
@@ -51,7 +70,41 @@ class ProductTarget(ObjectiveMixin):
         on_delete=models.CASCADE,
         null=False,
         blank=False,
-        related_name='products',
+        related_name='product_targets'
+    )
+
+
+class RevenueTypeTarget(ObjectiveMixin):
+    revenue_type = models.ForeignKey(
+        RevenueType,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name='targets'
+    )
+    metric = models.ForeignKey(
+        Metric,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name='revenue_type_targets'
+    )
+
+
+class RevenueStreamTarget(ObjectiveMixin):
+    revenue_stream = models.ForeignKey(
+        RevenueStream,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name='targets'
+    )
+    metric = models.ForeignKey(
+        Metric,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name='revenue_stream_targets'
     )
 
 
@@ -68,5 +121,5 @@ class IncomeStreamTarget(ObjectiveMixin):
         on_delete=models.CASCADE,
         null=False,
         blank=False,
-        related_name='income_streams',
+        related_name='income_stream_targets'
     )
