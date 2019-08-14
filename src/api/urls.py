@@ -1,11 +1,6 @@
 from django.urls import path
-from .views.company import CompanyListCreateAPIView
-from .views.subsidiary import SubsidiaryListCreateAPIView
-from .views.value_centre import ValueCentreListCreateAPIView
-from .views.product import ProductListCreateAPIView
-from .views.income_stream import (
-    IncomeStreamListCreateAPIView
-)
+from .views import *
+
 from .views.metric import MetricListCreateAPIView
 from .views.target import (
     ValueCentreTargetListCreateAPIView,
@@ -24,10 +19,12 @@ from .analytics import (
 
 urlpatterns = [
     path('company/', CompanyListCreateAPIView.as_view(), name='company'),
-    path('subsidiary/<int:company_id>/', SubsidiaryListCreateAPIView.as_view(), name='subsidiary'),
-    path('value_centre/<int:subsidiary_id>/', ValueCentreListCreateAPIView.as_view(), name='value_centre'),
-    path('product/<int:value_centre_id>/', ProductListCreateAPIView.as_view(), name='product'),
-    path('income_stream/<int:product_id>/', IncomeStreamListCreateAPIView.as_view(), name='income_stream'),
+    path('value_centre/<int:company_id>/', ValueCentreListCreateAPIView.as_view(), name='value_centre'),
+    path('department/<int:value_centre_id>/', DepartmentListCreateAPIView.as_view(), name='department'),
+    path('product/<int:department_id>/', ProductListCreateAPIView.as_view(), name='product'),
+    path('revenue_type/<int:product_id>/', RevenueTypeListCreateAPIView.as_view(), name='revenue_type'),
+    path('revenue_stream/<int:revenue_type_id>/', RevenueStreamListCreateAPIView.as_view(), name='revenue_stream'),
+    path('income_stream/<int:revenue_stream_id>/', IncomeStreamListCreateAPIView.as_view(), name='income_stream'),
     path('metric/', MetricListCreateAPIView.as_view(), name='metric'),
     path('value_centre_target/<int:value_centre_id>/', ValueCentreTargetListCreateAPIView.as_view(), name='v_c_target'),
     path('product_target/<int:product_id>/', ProductTargettListCreateAPIView.as_view(), name='product_target'),

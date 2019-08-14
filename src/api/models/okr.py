@@ -20,7 +20,9 @@ class OKRMixin(CommonFieldsMixin):
         blank=False
     )
     period = models.CharField(
-        max_length=100, null=False, blank=False, default='placeholder'
+        max_length=100,
+        null=False,
+        blank=False
     )
 
 

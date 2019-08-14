@@ -1,4 +1,4 @@
-""" Company views"""
+""" Target views"""
 
 from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.generics import ListCreateAPIView
