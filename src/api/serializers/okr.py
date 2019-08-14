@@ -2,10 +2,75 @@
 
 from rest_framework import serializers
 
-from src.api.models.okr import ValueCentreOKR, ProductOKR, IncomeStreamOKR
-from src.api.serializers.product import ProductSerializer
-from src.api.serializers.income_stream import IncomeStreamSerializer
-from src.api.serializers.metric import MetricSerializer
+from src.api.models.okr import (
+    ValueCentreOKR,
+    ProductOKR,
+    IncomeStreamOKR,
+    DepartmentOKR,
+    RevenueTypeOKR,
+    RevenueStreamOKR
+)
+
+
+class RevenueStreamOKRSerializer(serializers.ModelSerializer):
+    """ RevenueStreamOKR serializer"""
+
+    revenue_stream = serializers.SerializerMethodField()
+    metric = serializers.SerializerMethodField()
+
+    def get_revenue_stream(self, obj):
+        return obj.revenue_stream.name
+
+    def get_metric(self, obj):
+        return obj.metric.name
+
+
+    class Meta:
+        """ Meta options"""
+        model = RevenueStreamOKR
+        fields = ['name', 'description', 'metric',
+                    'revenue_stream', 'amount', 'period']
+
+
+class RevenueTypeOKRSerializer(serializers.ModelSerializer):
+    """ RevenueTypeOKR serializer"""
+
+    revenue_type = serializers.SerializerMethodField()
+    metric = serializers.SerializerMethodField()
+
+    def get_revenue_type(self, obj):
+        return obj.revenue_type.name
+
+    def get_metric(self, obj):
+        return obj.metric.name
+
+
+    class Meta:
+        """ Meta options"""
+        model = RevenueTypeOKR
+        fields = ['name', 'description', 'metric',
+                    'revenue_type', 'amount', 'period']
+
+
+
+class DepartmentOKRSerializer(serializers.ModelSerializer):
+    """ DepartmentOKR serializer"""
+
+    department = serializers.SerializerMethodField()
+    metric = serializers.SerializerMethodField()
+
+    def get_department(self, obj):
+        return obj.department.name
+
+    def get_metric(self, obj):
+        return obj.metric.name
+
+
+    class Meta:
+        """ Meta options"""
+        model = DepartmentOKR
+        fields = ['name', 'description', 'metric',
+                    'department', 'amount', 'period']
 
 
 class ValueCentreOKRSerializer(serializers.ModelSerializer):
@@ -25,7 +90,7 @@ class ValueCentreOKRSerializer(serializers.ModelSerializer):
         """ Meta options"""
         model = ValueCentreOKR
         fields = ['name', 'description', 'metric',
-                    'value_centre', 'amount']
+                    'value_centre', 'amount', 'period']
 
 
 class ProductOKRSerializer(serializers.ModelSerializer):
@@ -45,7 +110,7 @@ class ProductOKRSerializer(serializers.ModelSerializer):
         """ Meta options"""
         model = ProductOKR
         fields = ['name', 'description', 'metric',
-                    'product', 'amount']
+                    'product', 'amount', 'period']
 
 class IncomeStreamOKRSerializer(serializers.ModelSerializer):
     """ IncomeStreamOKR serializer"""
