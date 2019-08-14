@@ -3,15 +3,15 @@
 from rest_framework import serializers
 
 from src.api.models.income_stream import IncomeStream
-from src.api.serializers.product import ProductSerializer
+from src.api.serializers.revenue_stream import RevenueStreamSerializer
 
 class IncomeStreamSerializer(serializers.ModelSerializer):
     """ IncomeStream model serializer"""
 
-    product = ProductSerializer(read_only=True)
+    revenue_stream = RevenueStreamSerializer(read_only=True)
 
     class Meta:
         """ Meta options"""
         
         model = IncomeStream
-        fields = ['name', 'description', 'product']
+        fields = ['name', 'description', 'revenue_stream']

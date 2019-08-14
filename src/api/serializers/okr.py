@@ -1,4 +1,4 @@
-""" Target serializers"""
+""" Objectivekeyresults serializers"""
 
 from rest_framework import serializers
 

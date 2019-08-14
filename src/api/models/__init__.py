@@ -1,5 +1,4 @@
 from .company import Company
-from .subsidiary import Subsidiary
 from .value_centre import ValueCentre
 from .product import Product
 from .income_stream import IncomeStream
@@ -14,3 +13,7 @@ from .okr import (
     ProductOKR,
     IncomeStreamOKR
 )
+from .department import Department
+from .revenue_type import RevenueType
+from .revenue_stream import RevenueStream
+

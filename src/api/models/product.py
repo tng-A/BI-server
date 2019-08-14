@@ -3,15 +3,15 @@
 from django.db import models
 
 from .base import CommonFieldsMixin
-from .value_centre import ValueCentre
+from .department import Department
 
 class Product(CommonFieldsMixin):
-    """ Product model """
+    """ Product model e.g agency or merchant"""
 
     name = models.CharField(max_length=50, null=False)
     description = models.CharField(max_length=100, null=True, blank=True)
-    value_centre = models.ForeignKey(
-        ValueCentre,
+    department = models.ForeignKey(
+        Department,
         on_delete=models.CASCADE,
         related_name='products'
     )
