@@ -28,7 +28,6 @@ class ValueCentreListCreateAPIView(ListCreateAPIView):
         queryset = company.value_centres.all()
         # value_centres = []
         for v_c in queryset:
-            total_okr = 0
             okr = v_c.okrs.all()
             target = v_c.targets.all()
             total_target = v_c.targets.aggregate(
@@ -38,7 +37,6 @@ class ValueCentreListCreateAPIView(ListCreateAPIView):
                 percentage = (total_okr / total_target) * 100
             except ZeroDivisionError:
                 percentage = 0
-
             v_c.objective_key_results = okr
             v_c.value_centre_targets = target
             v_c.percentage = percentage

@@ -21,6 +21,7 @@ setup(
         "django-rest-swagger==2.2.0",
         "gunicorn==19.9.0",
         "django-cors-middleware==1.4.0",
-        "django-grappelli==2.13.1"
+        "django-grappelli==2.13.1",
+        "whitenoise==4.1.3"
     ]
 )
