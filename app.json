@@ -12,7 +12,7 @@
       "required": true
     },
     "DISABLE_COLLECTSTATIC": {
-      "required": true
+      "required": false
     },
     "SECRET_KEY": {
       "required": true
