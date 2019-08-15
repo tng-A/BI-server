@@ -16,3 +16,6 @@ class RevenueStream(CommonFieldsMixin):
         on_delete=models.CASCADE,
         related_name='revenue_streams'
     )
+
+    def __str__(self):
+        return self.name

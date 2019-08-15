@@ -15,3 +15,6 @@ class Department(CommonFieldsMixin):
         on_delete=models.CASCADE,
         related_name='departments'
     )
+
+    def __str__(self):
+        return self.name

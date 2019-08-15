@@ -15,3 +15,6 @@ class RevenueType(CommonFieldsMixin):
         on_delete=models.CASCADE,
         related_name='revenue_types'
     )
+
+    def __str__(self):
+        return self.name
