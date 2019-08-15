@@ -42,7 +42,7 @@ class ValueCentreListCreateAPIView(ListCreateAPIView):
                 total_okr += okr_var.amount
             okr += okrs
             try:
-                percentage = total_okr / total_target * 100
+                percentage = (total_okr / total_target) * 100
             except ZeroDivisionError:
                 percentage = 0
             v_c.objective_key_results = okr
