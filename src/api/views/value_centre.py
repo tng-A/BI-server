@@ -26,6 +26,28 @@ class ValueCentreListCreateAPIView(ListCreateAPIView):
             message = 'Company does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         queryset = company.value_centres.all()
+        value_centres = []
+        for v_c in queryset:
+            total_target = 0
+            total_okr = 0
+            okr = []
+            target = []
+            value_centre = ValueCentre.objects.get(pk=v_c.id)
+            targets = value_centre.targets.all()
+            target += targets
+            for t in targets:
+                total_target += t.amount
+            okrs = value_centre.okrs.all()
+            for okr_var in okrs:
+                total_okr += okr_var.amount
+            okr += okrs
+            percentage = total_okr/total_target * 100
+            v_c.objective_key_results = okr
+            v_c.value_centre_targets = target
+            v_c.percentage = percentage
+            v_c.total_target = total_okr
+            v_c.total_okr = total_okr
+            value_centres.append(v_c)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
