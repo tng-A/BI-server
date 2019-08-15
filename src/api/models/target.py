@@ -19,6 +19,10 @@ class ObjectiveMixin(CommonFieldsMixin):
     start = models.CharField(max_length=100, null=False, blank=False)
     end = models.CharField(max_length=100, null=False, blank=False)
 
+
+    def __str__(self):
+        return self.name
+        
     class Meta:
         abstract = True
 

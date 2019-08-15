@@ -15,3 +15,6 @@ class ValueCentre(CommonFieldsMixin):
         on_delete=models.CASCADE,
         related_name='value_centres'
     )
+
+    def __str__(self):
+        return self.name
