@@ -14,7 +14,10 @@ from .metric import Metric
 from .okr import (
     ValueCentreOKR,
     ProductOKR,
-    IncomeStreamOKR
+    IncomeStreamOKR,
+    DepartmentOKR,
+    RevenueTypeOKR,
+    RevenueStreamOKR
 )
 from .department import Department
 from .revenue_type import RevenueType

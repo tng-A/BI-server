@@ -2,12 +2,6 @@ from django.urls import path
 from .views import *
 
 from .views.metric import MetricListCreateAPIView
-
-from .views.okr import (
-    ValueCentreOKRListCreateAPIView,
-    ProductOKRListCreateAPIView,
-    IncomeStreamOKRListCreateAPIView
-)
 from .analytics import (
     IncomeStreamTrends,
     IncomeStreamCard
@@ -74,6 +68,21 @@ urlpatterns = [
         'income_stream_okr/<int:income_stream_id>/',
         IncomeStreamOKRListCreateAPIView.as_view(),
         name='income_stream_okr'
+        ),
+    path(
+        'department_okr/<int:department_id>/',
+        DepartmentOKRListCreateAPIView.as_view(),
+        name='department_okr'
+        ),
+    path(
+        'revenue_type_okr/<int:revenue_type_id>/',
+        RevenueTypeOKRListCreateAPIView.as_view(),
+        name='revenue_type_okr'
+        ),
+    path(
+        'revenue_stream_okr/<int:revenue_stream_id>/',
+        RevenueStreamOKRListCreateAPIView.as_view(),
+        name='revenue_stream_okr'
         ),
     path(
         'income_stream_trends/<int:income_stream_id>/<str:start>/<str:end>',

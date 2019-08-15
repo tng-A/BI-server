@@ -7,6 +7,9 @@ from .value_centre import ValueCentre
 from .metric import Metric
 from .product import Product
 from .income_stream import IncomeStream
+from .department import Department
+from .revenue_stream import RevenueStream
+from .revenue_type import RevenueType
 
 
 class OKRMixin(CommonFieldsMixin):
@@ -53,6 +56,36 @@ class ProductOKR(OKRMixin):
 class IncomeStreamOKR(OKRMixin):
     income_stream = models.ForeignKey(
         IncomeStream,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name='okrs'
+    )
+
+
+class DepartmentOKR(OKRMixin):
+    department = models.ForeignKey(
+        Department,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name='okrs'
+    )
+
+
+class RevenueStreamOKR(OKRMixin):
+    revenue_stream = models.ForeignKey(
+        RevenueStream,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name='okrs'
+    )
+
+
+class RevenueTypeOKR(OKRMixin):
+    revenue_type = models.ForeignKey(
+        RevenueType,
         on_delete=models.CASCADE,
         null=False,
         blank=False,
