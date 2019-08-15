@@ -11,11 +11,11 @@ from src.api.serializers.target import ValueCentreTargetSerializer
 class ValueCentreSerializer(serializers.ModelSerializer):
     """ ValueCentre model serializer"""
     company = CompanySerializer(read_only=True)
-    total_target = serializers.FloatField()
-    total_okr = serializers.FloatField()
-    objective_key_results = ValueCentreOKRSerializer(many=True)
-    value_centre_targets = ValueCentreTargetSerializer(many=True)
-    percentage = serializers.FloatField()
+    total_target = serializers.FloatField(read_only=True)
+    total_okr = serializers.FloatField(read_only=True)
+    objective_key_results = ValueCentreOKRSerializer(many=True, read_only=True)
+    value_centre_targets = ValueCentreTargetSerializer(many=True, read_only=True)
+    percentage = serializers.FloatField(read_only=True)
 
 
     class Meta:
