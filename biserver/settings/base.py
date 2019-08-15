@@ -28,7 +28,13 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost:3000',
+    'localhost:8000',
+    'localhost',
+    '.herokuapp.com'
+]
 
 
 # Application definition
@@ -41,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'corsheaders',
     'rest_framework',
     'rest_framework_swagger',
 
@@ -51,12 +58,19 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+MIDDLEWARE_CLASSES = (
+    'corsheaders.middleware.CorsMiddleware',
+)
+CORS_ORIGIN_ALLOW_ALL = True
+
 
 ROOT_URLCONF = 'biserver.urls'
 
@@ -125,6 +139,10 @@ SWAGGER_SETTINGS = {
     }
 }
 
+
+CORS_ORIGIN_WHITELIST = (
+    '*'
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
