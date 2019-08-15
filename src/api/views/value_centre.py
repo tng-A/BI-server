@@ -1,5 +1,5 @@
 """ ValueCentre views"""
-
+from django.db.models import Sum
 from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.permissions import AllowAny
@@ -26,31 +26,25 @@ class ValueCentreListCreateAPIView(ListCreateAPIView):
             message = 'Company does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         queryset = company.value_centres.all()
-        value_centres = []
+        # value_centres = []
         for v_c in queryset:
-            total_target = 0
             total_okr = 0
-            okr = []
-            target = []
-            value_centre = ValueCentre.objects.get(pk=v_c.id)
-            targets = value_centre.targets.all()
-            target += targets
-            for t in targets:
-                total_target += t.amount
-            okrs = value_centre.okrs.all()
-            for okr_var in okrs:
-                total_okr += okr_var.amount
-            okr += okrs
+            okr = v_c.okrs.all()
+            target = v_c.targets.all()
+            total_target = v_c.targets.aggregate(
+                Sum('amount'))['amount__sum'] or 0
+            total_okr = v_c.okrs.aggregate(Sum('amount'))['amount__sum'] or 0
             try:
                 percentage = (total_okr / total_target) * 100
             except ZeroDivisionError:
                 percentage = 0
+
             v_c.objective_key_results = okr
             v_c.value_centre_targets = target
             v_c.percentage = percentage
-            v_c.total_target = total_okr
+            v_c.total_target = total_target
             v_c.total_okr = total_okr
-            value_centres.append(v_c)
+
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
