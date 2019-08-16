@@ -12,6 +12,15 @@ from src.api.models.okr import (
 )
 
 
+class FilteredValueCentresOKRSSerializer(serializers.Serializer):
+    label = serializers.CharField()
+    value_centre = serializers.CharField()
+    amount = serializers.IntegerField()
+
+    class Meta:
+        fields = ['value_centre', 'label', 'amount']
+
+
 class RevenueStreamOKRSerializer(serializers.ModelSerializer):
     """ RevenueStreamOKR serializer"""
 
@@ -78,6 +87,7 @@ class ValueCentreOKRSerializer(serializers.ModelSerializer):
 
     value_centre = serializers.SerializerMethodField()
     metric = serializers.SerializerMethodField()
+    label = serializers.CharField()
 
     def get_value_centre(self, obj):
         return obj.value_centre.name
@@ -89,7 +99,7 @@ class ValueCentreOKRSerializer(serializers.ModelSerializer):
     class Meta:
         """ Meta options"""
         model = ValueCentreOKR
-        fields = ['name', 'description', 'metric',
+        fields = ['name', 'label', 'metric',
                     'value_centre', 'amount', 'period']
 
 

@@ -19,5 +19,6 @@ from .okr import (
     RevenueTypeOKRListCreateAPIView,
     ValueCentreOKRListCreateAPIView,
     ProductOKRListCreateAPIView,
-    IncomeStreamOKRListCreateAPIView
+    IncomeStreamOKRListCreateAPIView,
+    FilteredValueCentresOKRSListAPIView
 )

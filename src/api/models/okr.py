@@ -10,7 +10,7 @@ from .income_stream import IncomeStream
 from .department import Department
 from .revenue_stream import RevenueStream
 from .revenue_type import RevenueType
-
+from .period import Period
 
 class OKRMixin(CommonFieldsMixin):
     name = models.CharField(max_length=50, null=False)
@@ -22,9 +22,10 @@ class OKRMixin(CommonFieldsMixin):
         null=False,
         blank=False
     )
-    period = models.CharField(
+    period = models.ForeignKey(
+        Period,
+        on_delete=models.PROTECT,
         max_length=100,
-        null=False,
         blank=False
     )
 

@@ -1,7 +1,9 @@
 """ OKR views"""
+import dateutil.parser
 
+from django.db.models import Q
 from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView, ListAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
@@ -12,7 +14,8 @@ from src.api.serializers.okr import (
     IncomeStreamOKRSerializer,
     DepartmentOKRSerializer,
     RevenueStreamOKRSerializer,
-    RevenueTypeOKRSerializer
+    RevenueTypeOKRSerializer,
+    FilteredValueCentresOKRSSerializer
 )
 from src.api.models import (
     ValueCentreOKR,
@@ -27,9 +30,36 @@ from src.api.models import (
     RevenueType,
     DepartmentOKR,
     RevenueStreamOKR,
-    RevenueTypeOKR
+    RevenueTypeOKR,
+    Company
 )
 
+
+class FilteredValueCentresOKRSListAPIView(ListAPIView):
+    permission_classes = (AllowAny,)
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
+    serializer_class = ValueCentreOKRSerializer
+    queryset = ValueCentreOKR.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        try:
+            company = Company.objects.get(pk=kwargs['company_id'])
+        except Company.DoesNotExist:
+            message = 'Company does not exist'
+            return Response(message, status=status.HTTP_404_NOT_FOUND)
+        queryset = company.value_centres.all()
+        all_okrs = []
+        for v_c in queryset:
+            all_okrs += v_c.okrs.filter(
+                period__period_type__iexact=kwargs['period_type']
+            ).filter(
+                Q(period__start__icontains=kwargs['year']) |
+                Q(period__end__icontains=kwargs['year']))
+            for okr in all_okrs:
+                start_date = okr.period.start.strftime("%b %d %Y")
+                okr.label = start_date[:3]
+        serializer = self.get_serializer(all_okrs, many=True)
+        return Response(serializer.data)
 
 
 class IncomeStreamOKRListCreateAPIView(ListCreateAPIView):

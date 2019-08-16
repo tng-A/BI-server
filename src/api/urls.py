@@ -60,6 +60,11 @@ urlpatterns = [
         name='value_centre_okr'
         ),
     path(
+        'filtered_value_centres_okrs/<int:company_id>/<str:period_type>/<str:year>',
+        FilteredValueCentresOKRSListAPIView.as_view(),
+        name='filtered_value_centres_okrs'
+        ),
+    path(
         'product_okr/<int:product_id>/',
         ProductOKRListCreateAPIView.as_view(),
         name='product_okr'

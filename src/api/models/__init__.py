@@ -22,3 +22,4 @@ from .okr import (
 from .department import Department
 from .revenue_type import RevenueType
 from .revenue_stream import RevenueStream
+from .period import Period
