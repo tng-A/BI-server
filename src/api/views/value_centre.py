@@ -34,7 +34,7 @@ class ValueCentreListCreateAPIView(ListCreateAPIView):
                 Sum('amount'))['amount__sum'] or 0
             total_okr = v_c.okrs.aggregate(Sum('amount'))['amount__sum'] or 0
             try:
-                percentage = (total_okr / total_target) * 100
+                percentage = round((total_okr / total_target) * 100, 2)
             except ZeroDivisionError:
                 percentage = 0
             v_c.objective_key_results = okr
