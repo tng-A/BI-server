@@ -9,7 +9,7 @@
   ],
   "env": {
     "DEBUG": {
-      "required": true
+      "required": false
     },
     "DISABLE_COLLECTSTATIC": {
       "required": false

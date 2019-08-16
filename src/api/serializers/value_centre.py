@@ -22,6 +22,6 @@ class ValueCentreSerializer(serializers.ModelSerializer):
         """ Meta options"""
         
         model = ValueCentre
-        fields = [ 'id', 'name', 'total_target',
+        fields = [ 'id', 'name', 'color', 'total_target',
                     'total_okr', 'percentage', 'value_centre_targets',
                     'objective_key_results', 'company']
