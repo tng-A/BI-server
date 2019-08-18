@@ -6,9 +6,7 @@ from src.api.models.target import (
     ValueCentreTarget,
     ProductTarget,
     IncomeStreamTarget,
-    DepartmentTarget,
-    RevenueStreamTarget,
-    RevenueTypeTarget
+    RevenueStreamTarget
 )
 from src.api.serializers.product import ProductSerializer
 from src.api.serializers.income_stream import IncomeStreamSerializer
@@ -31,28 +29,7 @@ class ValueCentreTargetSerializer(serializers.ModelSerializer):
     class Meta:
         """ Meta options"""
         model = ValueCentreTarget
-        fields = ['name', 'description', 'metric',
-                    'value_centre', 'amount', 'start', 'end']
-
-
-class DepartmentTargetSerializer(serializers.ModelSerializer):
-    """ DepartmentTarget serializer"""
-
-    department = serializers.SerializerMethodField()
-    metric = serializers.SerializerMethodField()
-
-    def get_department(self, obj):
-        return obj.department.name
-
-    def get_metric(self, obj):
-        return obj.metric.name
-
-
-    class Meta:
-        """ Meta options"""
-        model = DepartmentTarget
-        fields = ['name', 'description', 'metric',
-                    'department', 'amount', 'start', 'end']
+        fields = ['metric', 'value_centre', 'amount']
 
 class ProductTargetSerializer(serializers.ModelSerializer):
     """ ProductTarget serializer"""
@@ -70,28 +47,7 @@ class ProductTargetSerializer(serializers.ModelSerializer):
     class Meta:
         """ Meta options"""
         model = ProductTarget
-        fields = ['name', 'description', 'metric',
-                    'product', 'amount', 'start', 'end']
-
-
-class RevenueTypeTargetSerializer(serializers.ModelSerializer):
-    """ RevenueTypeTarget serializer"""
-
-    revenue_type = serializers.SerializerMethodField()
-    metric = serializers.SerializerMethodField()
-
-    def get_revenue_type(self, obj):
-        return obj.revenue_type.name
-
-    def get_metric(self, obj):
-        return obj.metric.name
-
-
-    class Meta:
-        """ Meta options"""
-        model = RevenueTypeTarget
-        fields = ['name', 'description', 'metric',
-                    'revenue_type', 'amount', 'start', 'end']
+        fields = ['metric', 'product', 'amount']
 
 
 class RevenueStreamTargetSerializer(serializers.ModelSerializer):
@@ -110,8 +66,7 @@ class RevenueStreamTargetSerializer(serializers.ModelSerializer):
     class Meta:
         """ Meta options"""
         model = RevenueStreamTarget
-        fields = ['name', 'description', 'metric',
-                    'revenue_stream', 'amount', 'start', 'end']
+        fields = ['metric', 'revenue_stream', 'amount']
 
 class IncomeStreamTargetSerializer(serializers.ModelSerializer):
     """ IncomeStreamTarget serializer"""
@@ -129,6 +84,5 @@ class IncomeStreamTargetSerializer(serializers.ModelSerializer):
     class Meta:
         """ Meta options"""
         model = IncomeStreamTarget
-        fields = ['name', 'description', 'metric',
-                    'income_stream', 'amount', 'start', 'end']
+        fields = ['metric', 'income_stream', 'amount']
 

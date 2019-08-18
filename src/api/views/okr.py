@@ -12,10 +12,9 @@ from src.api.serializers.okr import (
     ValueCentreOKRSerializer,
     ProductOKRSerializer,
     IncomeStreamOKRSerializer,
-    DepartmentOKRSerializer,
     RevenueStreamOKRSerializer,
-    RevenueTypeOKRSerializer,
-    FilteredValueCentresOKRSSerializer
+    FilteredValueCentresOKRSSerializer,
+    RevenueStreamTransactionsOKRSerializer
 )
 from src.api.models import (
     ValueCentreOKR,
@@ -25,14 +24,40 @@ from src.api.models import (
     ValueCentre,
     Metric,
     Product,
-    Department,
     RevenueStream,
-    RevenueType,
-    DepartmentOKR,
     RevenueStreamOKR,
-    RevenueTypeOKR,
-    Company
+    Company,
+    Transaction
 )
+
+
+class RevenueStreamTransactionsOKRListAPIView(ListAPIView):
+    permission_classes = (AllowAny,)
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
+    serializer_class = RevenueStreamTransactionsOKRSerializer
+    queryset = Transaction.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        try:
+            revenue_stream = RevenueStream.objects.get(pk=kwargs['revenue_stream_id'])
+        except RevenueStream.DoesNotExist:
+            message = 'RevenueStream does not exist'
+            return Response(message, status=status.HTTP_404_NOT_FOUND)
+        transactions = Transaction.objects.all().filter(
+            revenue_stream__id__icontains=revenue_stream.id
+        )
+        transactions_value = 0
+        number_of_transactions = 0
+        for transaction in transactions:
+            transactions_value += transaction.amount
+            number_of_transactions += 1
+        okr = {
+            "transactions_value": transactions_value,
+            "number_of_transactions": number_of_transactions,
+            "transactions": transactions
+        }
+        serializer = self.get_serializer(okr)
+        return Response(serializer.data)
 
 
 class FilteredValueCentresOKRSListAPIView(ListAPIView):
@@ -171,43 +196,6 @@ class ValueCentreOKRListCreateAPIView(ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class DepartmentOKRListCreateAPIView(ListCreateAPIView):
-    permission_classes = (AllowAny,)
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
-    serializer_class = DepartmentOKRSerializer
-    queryset = DepartmentOKR.objects.all()
-
-    def list(self, request, *args, **kwargs):
-        try:
-            department = Department.objects.get(pk=kwargs['department_id'])
-        except Department.DoesNotExist:
-            message = 'Department does not exist'
-            return Response(message, status=status.HTTP_404_NOT_FOUND)
-        queryset = department.okrs.all()
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-
-    
-    def create(self, request, *args, **kwargs):
-        try:
-            department = Department.objects.get(pk=kwargs['department_id'])
-        except Department.DoesNotExist:
-            message = 'Department does not exist'
-            return Response(message, status=status.HTTP_404_NOT_FOUND)
-        data = request.data
-        metric, _ = Metric.objects.get_or_create(name=data['metric'])
-        serializer_context = {
-            'request': request,
-            'metric': metric,
-            'department': department
-        }
-        serializer = self.serializer_class(
-            data=data, context=serializer_context)
-        serializer.is_valid(raise_exception=True)
-        serializer.save(department=department, metric=metric)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
 class RevenueStreamOKRListCreateAPIView(ListCreateAPIView):
     permission_classes = (AllowAny,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
@@ -241,40 +229,4 @@ class RevenueStreamOKRListCreateAPIView(ListCreateAPIView):
             data=data, context=serializer_context)
         serializer.is_valid(raise_exception=True)
         serializer.save(revenue_stream=revenue_stream, metric=metric)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-class RevenueTypeOKRListCreateAPIView(ListCreateAPIView):
-    permission_classes = (AllowAny,)
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
-    serializer_class = RevenueTypeOKRSerializer
-    queryset = RevenueTypeOKR.objects.all()
-
-    def list(self, request, *args, **kwargs):
-        try:
-            revenue_type = RevenueType.objects.get(pk=kwargs['revenue_type_id'])
-        except RevenueType.DoesNotExist:
-            message = 'RevenueType does not exist'
-            return Response(message, status=status.HTTP_404_NOT_FOUND)
-        queryset = revenue_type.okrs.all()
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-    
-    def create(self, request, *args, **kwargs):
-        try:
-            revenue_type = RevenueType.objects.get(pk=kwargs['revenue_type_id'])
-        except RevenueType.DoesNotExist:
-            message = 'RevenueType does not exist'
-            return Response(message, status=status.HTTP_404_NOT_FOUND)
-        data = request.data
-        metric, _ = Metric.objects.get_or_create(name=data['metric'])
-        serializer_context = {
-            'request': request,
-            'metric': metric,
-            'revenue_type': revenue_type
-        }
-        serializer = self.serializer_class(
-            data=data, context=serializer_context)
-        serializer.is_valid(raise_exception=True)
-        serializer.save(revenue_type=revenue_type, metric=metric)
         return Response(serializer.data, status=status.HTTP_201_CREATED)

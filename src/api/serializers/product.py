@@ -3,15 +3,17 @@
 from rest_framework import serializers
 
 from src.api.models.product import Product
-from src.api.serializers.department import DepartmentSerializer
 
 class ProductSerializer(serializers.ModelSerializer):
     """ Product model serializer"""
 
-    department = DepartmentSerializer(read_only=True)
+    value_centre = serializers.SerializerMethodField()
+
+    def get_value_centre(self, obj):
+        return obj.value_centre.name
 
     class Meta:
         """ Meta options"""
         
         model = Product
-        fields = ['name', 'description', 'department']
+        fields = ['name', 'description', 'value_centre']

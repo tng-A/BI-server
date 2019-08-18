@@ -9,12 +9,11 @@ from .analytics import (
 
 urlpatterns = [
     path('company/', CompanyListCreateAPIView.as_view(), name='company'),
+    path('channel/', ChannelListCreateAPIView.as_view(), name='channel'),
     path('value_centre/<int:company_id>/', ValueCentreListCreateAPIView.as_view(), name='value_centre'),
-    path('department/<int:value_centre_id>/', DepartmentListCreateAPIView.as_view(), name='department'),
-    path('product/<int:department_id>/', ProductListCreateAPIView.as_view(), name='product'),
-    path('revenue_type/<int:product_id>/', RevenueTypeListCreateAPIView.as_view(), name='revenue_type'),
+    path('product/<int:value_centre_id>/', ProductListCreateAPIView.as_view(), name='product'),
     path(
-        'revenue_stream/<int:revenue_type_id>/',
+        'revenue_stream/<int:product_id>/',
         RevenueStreamListCreateAPIView.as_view(),
         name='revenue_stream'
         ),
@@ -30,19 +29,9 @@ urlpatterns = [
         name='value_centre_target'
         ),
     path(
-        'department_target/<int:department_id>/',
-        DepartmentTargetListCreateAPIView.as_view(),
-        name='department_target'
-        ),
-    path(
         'product_target/<int:product_id>/',
         ProductTargettListCreateAPIView.as_view(),
         name='product_target'
-        ),
-    path(
-        'revenue_type_target/<int:revenue_type_id>/',
-        RevenueTypeTargetListCreateAPIView.as_view(),
-        name='revenue_type_target'
         ),
     path(
         'revenue_stream_target/<int:revenue_stream_id>/',
@@ -75,16 +64,6 @@ urlpatterns = [
         name='income_stream_okr'
         ),
     path(
-        'department_okr/<int:department_id>/',
-        DepartmentOKRListCreateAPIView.as_view(),
-        name='department_okr'
-        ),
-    path(
-        'revenue_type_okr/<int:revenue_type_id>/',
-        RevenueTypeOKRListCreateAPIView.as_view(),
-        name='revenue_type_okr'
-        ),
-    path(
         'revenue_stream_okr/<int:revenue_stream_id>/',
         RevenueStreamOKRListCreateAPIView.as_view(),
         name='revenue_stream_okr'
@@ -99,4 +78,11 @@ urlpatterns = [
         IncomeStreamCard.as_view(),
         name='income_stream_card'
         ),
+    path('transaction/<int:revenue_stream_id>/', TransactionListCreateAPIView.as_view(), name='transaction'),
+    path('company_revenue_streams/<int:company_id>/', CompanyRevenueStreams.as_view(), name='company_revenue_streams'),
+    path(
+        'revenue_stream_transaction_okr/<int:revenue_stream_id>/',
+        RevenueStreamTransactionsOKRListAPIView.as_view(),
+        name='revenue_stream_transaction_okr'),
+
 ]

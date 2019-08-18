@@ -14,7 +14,6 @@ class ValueCentreSerializer(serializers.ModelSerializer):
     total_target = serializers.FloatField(read_only=True)
     total_okr = serializers.FloatField(read_only=True)
     objective_key_results = ValueCentreOKRSerializer(many=True, read_only=True)
-    value_centre_targets = ValueCentreTargetSerializer(many=True, read_only=True)
     percentage = serializers.FloatField(read_only=True)
 
 
@@ -23,5 +22,5 @@ class ValueCentreSerializer(serializers.ModelSerializer):
         
         model = ValueCentre
         fields = [ 'id', 'name', 'color', 'total_target',
-                    'total_okr', 'percentage', 'value_centre_targets',
+                    'total_okr', 'percentage',
                     'objective_key_results', 'company']

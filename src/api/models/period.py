@@ -12,7 +12,6 @@ class Period(models.Model):
         ('weekly', 'Weekly'),
         ('daily', 'Daily'),
     )
-    name = models.CharField(max_length=50, blank=False)
     start = models.DateField()
     end = models.DateField()
     period_type = models.CharField(
@@ -20,4 +19,4 @@ class Period(models.Model):
         choices=PERIOD_TYPES, db_index=True)
 
     def __str__(self):
-        return self.name
+        return self.period_type
