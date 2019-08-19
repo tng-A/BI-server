@@ -8,17 +8,13 @@ from .company import Company
 from .value_centre import ValueCentre
 from .product import Product
 from .income_stream import IncomeStream
-from .department import Department
-from .revenue_type import RevenueType
 from .revenue_stream import RevenueStream
+from .period import Period
+
 
 class ObjectiveMixin(CommonFieldsMixin):
-    name = models.CharField(max_length=50, null=False)
-    description = models.CharField(max_length=100, null=True, blank=True)
     amount = models.IntegerField(null=False, blank=False)
-    start = models.CharField(max_length=100, null=False, blank=False)
-    end = models.CharField(max_length=100, null=False, blank=False)
-
+    name = models.CharField(max_length=50, default='test')
 
     def __str__(self):
         return self.name
@@ -37,27 +33,15 @@ class ValueCentreTarget(ObjectiveMixin):
     )
     metric = models.ForeignKey(
         Metric,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         null=False,
         blank=False,
-        related_name='value_centre_targets'
+        related_name='value_centre_metrics'
     )
-  
-    
-class DepartmentTarget(ObjectiveMixin):
-    department = models.ForeignKey(
-        Department,
-        on_delete=models.CASCADE,
-        null=False,
-        blank=False,
-        related_name='targets'
-    )
-    metric = models.ForeignKey(
-        Metric,
-        on_delete=models.CASCADE,
-        null=False,
-        blank=False,
-        related_name='department_targets'
+    period = models.ForeignKey(
+        Period,
+        on_delete=models.PROTECT,
+        related_name='value_centre_periods'
     )
 
 
@@ -71,28 +55,17 @@ class ProductTarget(ObjectiveMixin):
     )
     metric = models.ForeignKey(
         Metric,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         null=False,
         blank=False,
         related_name='product_targets'
     )
-
-
-class RevenueTypeTarget(ObjectiveMixin):
-    revenue_type = models.ForeignKey(
-        RevenueType,
-        on_delete=models.CASCADE,
-        null=False,
-        blank=False,
-        related_name='targets'
+    period = models.ForeignKey(
+        Period,
+        on_delete=models.PROTECT,
+        related_name='product_periods'
     )
-    metric = models.ForeignKey(
-        Metric,
-        on_delete=models.CASCADE,
-        null=False,
-        blank=False,
-        related_name='revenue_type_targets'
-    )
+    
 
 
 class RevenueStreamTarget(ObjectiveMixin):
@@ -105,10 +78,15 @@ class RevenueStreamTarget(ObjectiveMixin):
     )
     metric = models.ForeignKey(
         Metric,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         null=False,
         blank=False,
         related_name='revenue_stream_targets'
+    )
+    period = models.ForeignKey(
+        Period,
+        on_delete=models.PROTECT,
+        related_name='revenue_stream_periods'
     )
 
 
@@ -122,8 +100,13 @@ class IncomeStreamTarget(ObjectiveMixin):
     )
     metric = models.ForeignKey(
         Metric,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         null=False,
         blank=False,
         related_name='income_stream_targets'
+    )
+    period = models.ForeignKey(
+        Period,
+        on_delete=models.PROTECT,
+        related_name='income_stream_periods'
     )

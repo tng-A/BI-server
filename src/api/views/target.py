@@ -10,8 +10,6 @@ from src.api.serializers.target import (
     ValueCentreTargetSerializer,
     ProductTargetSerializer,
     IncomeStreamTargetSerializer,
-    DepartmentTargetSerializer,
-    RevenueTypeTargetSerializer,
     RevenueStreamTargetSerializer
 )
 from src.api.models import (
@@ -22,12 +20,8 @@ from src.api.models import (
     ValueCentre,
     Metric,
     Product,
-    Department,
-    DepartmentTarget,
     RevenueStream,
     RevenueStreamTarget,
-    RevenueType,
-    RevenueTypeTarget
 )
 
 
@@ -78,98 +72,98 @@ class RevenueStreamTargetListCreateAPIView(ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class RevenueTypeTargetListCreateAPIView(ListCreateAPIView):
-    permission_classes = (AllowAny,)
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
-    serializer_class = RevenueTypeTargetSerializer
-    queryset = RevenueTypeTarget.objects.all()
+# class RevenueTypeTargetListCreateAPIView(ListCreateAPIView):
+#     permission_classes = (AllowAny,)
+#     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
+#     serializer_class = RevenueTypeTargetSerializer
+#     queryset = RevenueTypeTarget.objects.all()
 
-    def list(self, request, *args, **kwargs):
-        try:
-            revenue_type = RevenueType.objects.get(pk=self.kwargs['revenue_type_id'])
-        except RevenueType.DoesNotExist:
-            message = 'RevenueType does not exist'
-            return Response(message, status=status.HTTP_404_NOT_FOUND)
-        queryset = revenue_type.targets.all()
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-
-    
-    def create(self, request, *args, **kwargs):
-        try:
-            revenue_type = RevenueType.objects.get(pk=self.kwargs['revenue_type_id'])
-        except RevenueType.DoesNotExist:
-            message = 'RevenueType does not exist'
-            return Response(message, status=status.HTTP_404_NOT_FOUND)
-        data = request.data
-        exists = RevenueTypeTarget.objects.all().filter(
-            name__icontains=data['name'],
-            start__iexact=data['start'],
-            end__iexact=data['end'],
-            metric__name__icontains=data['metric'],
-            revenue_type__name__iexact=revenue_type.name
-        )
-        if len(exists) > 0:
-            message = 'That revenue type objective already exists'
-            return Response(message, status=status.HTTP_400_BAD_REQUEST)
-        metric, _ = Metric.objects.get_or_create(name=data['metric'])
-        serializer_context = {
-            'request': request,
-            'metric': metric,
-            'revenue_type': revenue_type
-        }
-        serializer = self.serializer_class(
-            data=data, context=serializer_context)
-        serializer.is_valid(raise_exception=True)
-        serializer.save(revenue_type=revenue_type, metric=metric)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-class DepartmentTargetListCreateAPIView(ListCreateAPIView):
-    permission_classes = (AllowAny,)
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
-    serializer_class = DepartmentTargetSerializer
-    queryset = DepartmentTarget.objects.all()
-
-    def list(self, request, *args, **kwargs):
-        try:
-            department = Department.objects.get(pk=self.kwargs['department_id'])
-        except Department.DoesNotExist:
-            message = 'Department does not exist'
-            return Response(message, status=status.HTTP_404_NOT_FOUND)
-        queryset = department.targets.all()
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+#     def list(self, request, *args, **kwargs):
+#         try:
+#             revenue_type = RevenueType.objects.get(pk=self.kwargs['revenue_type_id'])
+#         except RevenueType.DoesNotExist:
+#             message = 'RevenueType does not exist'
+#             return Response(message, status=status.HTTP_404_NOT_FOUND)
+#         queryset = revenue_type.targets.all()
+#         serializer = self.get_serializer(queryset, many=True)
+#         return Response(serializer.data)
 
     
-    def create(self, request, *args, **kwargs):
-        try:
-            department = Department.objects.get(pk=self.kwargs['department_id'])
-        except Department.DoesNotExist:
-            message = 'Department does not exist'
-            return Response(message, status=status.HTTP_404_NOT_FOUND)
-        data = request.data
-        exists = DepartmentTarget.objects.all().filter(
-            name__icontains=data['name'],
-            start__iexact=data['start'],
-            end__iexact=data['end'],
-            metric__name__icontains=data['metric'],
-            department__name__iexact=department.name
-        )
-        if len(exists) > 0:
-            message = 'That department objective already exists'
-            return Response(message, status=status.HTTP_400_BAD_REQUEST)
-        metric, _ = Metric.objects.get_or_create(name=data['metric'])
-        serializer_context = {
-            'request': request,
-            'metric': metric,
-            'department': department
-        }
-        serializer = self.serializer_class(
-            data=data, context=serializer_context)
-        serializer.is_valid(raise_exception=True)
-        serializer.save(department=department, metric=metric)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+#     def create(self, request, *args, **kwargs):
+#         try:
+#             revenue_type = RevenueType.objects.get(pk=self.kwargs['revenue_type_id'])
+#         except RevenueType.DoesNotExist:
+#             message = 'RevenueType does not exist'
+#             return Response(message, status=status.HTTP_404_NOT_FOUND)
+#         data = request.data
+#         exists = RevenueTypeTarget.objects.all().filter(
+#             name__icontains=data['name'],
+#             start__iexact=data['start'],
+#             end__iexact=data['end'],
+#             metric__name__icontains=data['metric'],
+#             revenue_type__name__iexact=revenue_type.name
+#         )
+#         if len(exists) > 0:
+#             message = 'That revenue type objective already exists'
+#             return Response(message, status=status.HTTP_400_BAD_REQUEST)
+#         metric, _ = Metric.objects.get_or_create(name=data['metric'])
+#         serializer_context = {
+#             'request': request,
+#             'metric': metric,
+#             'revenue_type': revenue_type
+#         }
+#         serializer = self.serializer_class(
+#             data=data, context=serializer_context)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save(revenue_type=revenue_type, metric=metric)
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+# class DepartmentTargetListCreateAPIView(ListCreateAPIView):
+#     permission_classes = (AllowAny,)
+#     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
+#     serializer_class = DepartmentTargetSerializer
+#     queryset = DepartmentTarget.objects.all()
+
+#     def list(self, request, *args, **kwargs):
+#         try:
+#             department = Department.objects.get(pk=self.kwargs['department_id'])
+#         except Department.DoesNotExist:
+#             message = 'Department does not exist'
+#             return Response(message, status=status.HTTP_404_NOT_FOUND)
+#         queryset = department.targets.all()
+#         serializer = self.get_serializer(queryset, many=True)
+#         return Response(serializer.data)
+
+    
+#     def create(self, request, *args, **kwargs):
+#         try:
+#             department = Department.objects.get(pk=self.kwargs['department_id'])
+#         except Department.DoesNotExist:
+#             message = 'Department does not exist'
+#             return Response(message, status=status.HTTP_404_NOT_FOUND)
+#         data = request.data
+#         exists = DepartmentTarget.objects.all().filter(
+#             name__icontains=data['name'],
+#             start__iexact=data['start'],
+#             end__iexact=data['end'],
+#             metric__name__icontains=data['metric'],
+#             department__name__iexact=department.name
+#         )
+#         if len(exists) > 0:
+#             message = 'That department objective already exists'
+#             return Response(message, status=status.HTTP_400_BAD_REQUEST)
+#         metric, _ = Metric.objects.get_or_create(name=data['metric'])
+#         serializer_context = {
+#             'request': request,
+#             'metric': metric,
+#             'department': department
+#         }
+#         serializer = self.serializer_class(
+#             data=data, context=serializer_context)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save(department=department, metric=metric)
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class IncomeStreamTargetListCreateAPIView(ListCreateAPIView):
