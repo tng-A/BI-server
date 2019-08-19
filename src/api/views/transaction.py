@@ -11,7 +11,8 @@ from src.api.serializers.revenue_stream import RevenueStreamSerializer
 from src.api.models import (
     Transaction,
     Company,
-    RevenueStream
+    RevenueStream,
+    Channel
 )
 
 class TransactionListCreateAPIView(ListCreateAPIView):
@@ -37,14 +38,20 @@ class TransactionListCreateAPIView(ListCreateAPIView):
         except RevenueStream.DoesNotExist:
             message = 'RevenueStream does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
+        try:
+            channel = Channel.objects.get(pk=data.pop('channel_id'))
+        except Channel.DoesNotExist:
+            message = 'Channel does not exist'
+            return Response(message, status=status.HTTP_404_NOT_FOUND)
         serializer_context = {
             'request': request,
-            'revenue_stream': revenue_stream
+            'revenue_stream': revenue_stream,
+            'channel': channel
         }
         serializer = self.serializer_class(
             data=data, context=serializer_context)
         serializer.is_valid(raise_exception=True)
-        serializer.save(revenue_stream=revenue_stream)
+        serializer.save(revenue_stream=revenue_stream, channel=channel)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class CompanyRevenueStreams(ListAPIView):
