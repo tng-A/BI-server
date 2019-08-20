@@ -15,8 +15,7 @@ from .okr import (
     ValueCentreOKRListCreateAPIView,
     ProductOKRListCreateAPIView,
     IncomeStreamOKRListCreateAPIView,
-    FilteredValueCentresOKRSListAPIView,
-    RevenueStreamTransactionsOKRListAPIView
+    FilteredValueCentresOKRSListAPIView
 )
 from src.api.views.transaction import(
     TransactionListCreateAPIView,

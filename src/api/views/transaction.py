@@ -18,6 +18,7 @@ from src.api.models import (
 
 
 class ProductTransactionsList(ListAPIView):
+    """ List all transactions in a given product"""
     permission_classes = (AllowAny,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = TransactionSerializer
@@ -40,13 +41,13 @@ class ProductTransactionsList(ListAPIView):
 
 
 class TransactionListCreateAPIView(ListCreateAPIView):
+    """ List/Create all transaction(s) in a given revenue stream """
     permission_classes = (AllowAny,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = TransactionSerializer
     queryset = Transaction.objects.all()
 
     def list(self, request, *args, **kwargs):
-        """ Get all transactions in a given revenue stream """
 
         try:
             revenue_stream = RevenueStream.objects.get(pk=kwargs['revenue_stream_id'])
@@ -58,7 +59,6 @@ class TransactionListCreateAPIView(ListCreateAPIView):
         return Response(serializer.data) 
 
     def create(self, request, *args, **kwargs):
-        """ Create a transaction in a given revenue stream """
 
         data = request.data
         try:
@@ -83,13 +83,13 @@ class TransactionListCreateAPIView(ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class CompanyRevenueStreams(ListAPIView):
+    """ Get all the revenue_streams in a given company"""
     permission_classes = (AllowAny,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = RevenueStreamSerializer
     queryset = RevenueStream.objects.all()
 
     def list(self, request, *args, **kwargs):
-        """ Get all the revenue_streams in a given company"""
 
         try:
             company = Company.objects.get(pk=kwargs['company_id'])
