@@ -13,22 +13,6 @@ from src.api.models import (
 )
 
 
-class RevenueStreamTransactionsOKR(generics.ListAPIView):
-    permission_classes = (AllowAny,)
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
-    serializer_class = RevenueStreamSerializer
-    queryset = RevenueStream.objects.all()
-
-    def list(self, request, *args, **kwargs):
-        try:
-            product = Product.objects.get(pk=kwargs['product_id'])
-        except Product.DoesNotExist:
-            message = 'Product does not exist'
-            return Response(message, status=status.HTTP_404_NOT_FOUND)
-        queryset = product.revenue_streams.all()
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-
 class RevenueStreamListCreateAPIView(generics.ListCreateAPIView):
     permission_classes = (AllowAny,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
