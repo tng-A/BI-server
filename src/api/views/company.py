@@ -8,6 +8,7 @@ from src.api.serializers.company import CompanySerializer
 from src.api.models import Company
 
 class CompanyListCreateAPIView(ListCreateAPIView):
+    """ List/Create companies"""
     permission_classes = (AllowAny,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = CompanySerializer

@@ -8,6 +8,7 @@ from src.api.serializers.channel import ChannelSerializer
 from src.api.models import Channel
 
 class ChannelListCreateAPIView(ListCreateAPIView):
+    """ Get/Create channels of payment"""
     permission_classes = (AllowAny,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = ChannelSerializer

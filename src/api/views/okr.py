@@ -13,8 +13,7 @@ from src.api.serializers.okr import (
     ProductOKRSerializer,
     IncomeStreamOKRSerializer,
     RevenueStreamOKRSerializer,
-    FilteredValueCentresOKRSSerializer,
-    RevenueStreamTransactionsOKRSerializer
+    FilteredValueCentresOKRSSerializer
 )
 from src.api.models import (
     ValueCentreOKR,
@@ -29,35 +28,6 @@ from src.api.models import (
     Company,
     Transaction
 )
-
-
-class RevenueStreamTransactionsOKRListAPIView(ListAPIView):
-    permission_classes = (AllowAny,)
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
-    serializer_class = RevenueStreamTransactionsOKRSerializer
-    queryset = Transaction.objects.all()
-
-    def list(self, request, *args, **kwargs):
-        try:
-            revenue_stream = RevenueStream.objects.get(pk=kwargs['revenue_stream_id'])
-        except RevenueStream.DoesNotExist:
-            message = 'RevenueStream does not exist'
-            return Response(message, status=status.HTTP_404_NOT_FOUND)
-        transactions = Transaction.objects.all().filter(
-            revenue_stream__id__icontains=revenue_stream.id
-        )
-        transactions_value = 0
-        number_of_transactions = 0
-        for transaction in transactions:
-            transactions_value += transaction.amount
-            number_of_transactions += 1
-        okr = {
-            "transactions_value": transactions_value,
-            "number_of_transactions": number_of_transactions,
-            "transactions": transactions
-        }
-        serializer = self.get_serializer(okr)
-        return Response(serializer.data)
 
 
 class FilteredValueCentresOKRSListAPIView(ListAPIView):

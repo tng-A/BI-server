@@ -11,6 +11,7 @@ from src.api.models import Metric
 from src.api.models import Company
 
 class MetricListCreateAPIView(ListCreateAPIView):
+    """ List/Create metrics"""
     permission_classes = (AllowAny,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = MetricSerializer
