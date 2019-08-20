@@ -48,7 +48,6 @@ class TransactionListCreateAPIView(ListCreateAPIView):
     queryset = Transaction.objects.all()
 
     def list(self, request, *args, **kwargs):
-
         try:
             revenue_stream = RevenueStream.objects.get(pk=kwargs['revenue_stream_id'])
         except RevenueStream.DoesNotExist:
@@ -59,7 +58,6 @@ class TransactionListCreateAPIView(ListCreateAPIView):
         return Response(serializer.data) 
 
     def create(self, request, *args, **kwargs):
-
         data = request.data
         try:
             revenue_stream = RevenueStream.objects.get(pk=kwargs['revenue_stream_id'])
@@ -90,7 +88,6 @@ class CompanyRevenueStreams(ListAPIView):
     queryset = RevenueStream.objects.all()
 
     def list(self, request, *args, **kwargs):
-
         try:
             company = Company.objects.get(pk=kwargs['company_id'])
         except Company.DoesNotExist:
