@@ -12,8 +12,32 @@ from src.api.models import (
     Transaction,
     Company,
     RevenueStream,
-    Channel
+    Channel,
+    Product
 )
+
+
+class ProductTransactionsList(ListAPIView):
+    permission_classes = (AllowAny,)
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
+    serializer_class = TransactionSerializer
+    queryset = Transaction.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        """ Get all transactions in a given product """
+
+        try:
+            product = Product.objects.get(pk=kwargs['product_id'])
+        except Product.DoesNotExist:
+            message = 'Product does not exist'
+            return Response(message, status=status.HTTP_404_NOT_FOUND)
+        revenue_streams = product.revenue_streams.all()
+        transactions = []
+        for revenue_stream in revenue_streams:
+            transactions += revenue_stream.transactions.all()
+        serializer = self.get_serializer(transactions, many=True)
+        return Response(serializer.data)
+
 
 class TransactionListCreateAPIView(ListCreateAPIView):
     permission_classes = (AllowAny,)
@@ -22,6 +46,8 @@ class TransactionListCreateAPIView(ListCreateAPIView):
     queryset = Transaction.objects.all()
 
     def list(self, request, *args, **kwargs):
+        """ Get all transactions in a given revenue stream """
+
         try:
             revenue_stream = RevenueStream.objects.get(pk=kwargs['revenue_stream_id'])
         except RevenueStream.DoesNotExist:
@@ -32,6 +58,8 @@ class TransactionListCreateAPIView(ListCreateAPIView):
         return Response(serializer.data) 
 
     def create(self, request, *args, **kwargs):
+        """ Create a transaction in a given revenue stream """
+
         data = request.data
         try:
             revenue_stream = RevenueStream.objects.get(pk=kwargs['revenue_stream_id'])
@@ -61,6 +89,8 @@ class CompanyRevenueStreams(ListAPIView):
     queryset = RevenueStream.objects.all()
 
     def list(self, request, *args, **kwargs):
+        """ Get all the revenue_streams in a given company"""
+
         try:
             company = Company.objects.get(pk=kwargs['company_id'])
         except Company.DoesNotExist:

@@ -20,5 +20,6 @@ from .okr import (
 )
 from src.api.views.transaction import(
     TransactionListCreateAPIView,
-    CompanyRevenueStreams
+    CompanyRevenueStreams,
+    ProductTransactionsList
 )
