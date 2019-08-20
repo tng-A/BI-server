@@ -24,8 +24,22 @@ class ProductListCreateAPIView(ListCreateAPIView):
         except ValueCentre.DoesNotExist:
             message = 'ValueCentre does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
-        queryset = value_centre.products.all()
-        serializer = self.get_serializer(queryset, many=True)
+        products = value_centre.products.all()
+        for product in products:
+            transactions = []
+            revenue_streams = product.revenue_streams.all()
+            for revenue_stream in revenue_streams:
+                ts = revenue_stream.transactions.all()
+                transactions += ts
+                transactions_value = 0
+                number_of_transactions = 0
+                for transaction in ts:
+                    transactions_value += transaction.amount
+                    number_of_transactions += 1
+                product.transactions_value = transactions_value
+                product.number_of_transactions = number_of_transactions
+                product.transactions = transactions
+        serializer = self.get_serializer(products, many=True)
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
