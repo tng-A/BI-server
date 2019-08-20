@@ -7,7 +7,6 @@ from src.api.models import Transaction
 class TransactionSerializer(serializers.ModelSerializer):
 
     revenue_stream = serializers.SerializerMethodField()
-    channel = serializers.SerializerMethodField()
 
     def get_channel(self, obj):
         return obj.channel.name
@@ -18,6 +17,6 @@ class TransactionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Transaction
-        fields = ['revenue_stream', 'amount', 'channel', 'transaction_id']
+        fields = ['revenue_stream', 'amount',]
 
 

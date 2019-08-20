@@ -10,12 +10,6 @@ class IncomeStream(CommonFieldsMixin):
     e.g parking or evening prepaid or postpaid payments"""
 
     name = models.CharField(max_length=50, null=False)
-    description = models.CharField(max_length=100, null=True, blank=True)
-    revenue_stream = models.ForeignKey(
-        RevenueStream,
-        on_delete=models.CASCADE,
-        related_name='income_streams'
-    )
 
     def __str__(self):
         return self.name
