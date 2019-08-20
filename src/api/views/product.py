@@ -12,6 +12,7 @@ from src.api.models import ValueCentre
 
 
 class ProductListCreateAPIView(ListCreateAPIView):
+    """ List/Create products"""
     permission_classes = (AllowAny,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = ProductSerializer

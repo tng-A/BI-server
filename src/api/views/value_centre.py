@@ -14,6 +14,7 @@ from src.api.models import (
 
 
 class ValueCentreListCreateAPIView(ListCreateAPIView):
+    """ List/Create value centre(s)"""
     permission_classes = (AllowAny,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = ValueCentreSerializer

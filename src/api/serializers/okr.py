@@ -11,17 +11,6 @@ from src.api.models.okr import (
 from src.api.serializers.transaction import TransactionSerializer
 
 
-
-class RevenueStreamTransactionsOKRSerializer(serializers.Serializer):
-    number_of_transactions = serializers.IntegerField()
-    transactions_value = serializers.FloatField()
-    transactions = TransactionSerializer(many=True)
-    
-    class Meta:
-        fields = ['number_of_transactions', 'transactions_value', 'transactions']
-
-
-
 class FilteredValueCentresOKRSSerializer(serializers.Serializer):
     label = serializers.CharField()
     value_centre = serializers.CharField()
