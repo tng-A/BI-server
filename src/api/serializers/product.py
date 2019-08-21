@@ -10,9 +10,9 @@ class ProductSerializer(serializers.ModelSerializer):
     """ Product model serializer"""
 
     value_centre = serializers.SerializerMethodField()
-    number_of_transactions = serializers.IntegerField()
-    transactions_value = serializers.FloatField()
-    transactions = TransactionSerializer(many=True)
+    number_of_transactions = serializers.IntegerField(read_only=True)
+    transactions_value = serializers.FloatField(read_only=True)
+    transactions = TransactionSerializer(many=True, read_only=True)
 
     def get_value_centre(self, obj):
         return obj.value_centre.name
