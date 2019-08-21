@@ -1,19 +1,23 @@
 """ IncomeStream views"""
 
 from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
-from rest_framework import generics
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 
 from src.api.serializers.income_stream import IncomeStreamSerializer
+from src.api.helpers.transactions import get_transactions, months_generator
 from src.api.models import (
     IncomeStream,
     RevenueStream
 )
 
 
-class IncomeStreamListCreateAPIView(generics.ListCreateAPIView):
+class IncomeStreamListAPIView(ListAPIView):
+    """ Get all income streams (eg Parking) in a revenue stream
+        (eg Embu) and transactions info
+    """
     permission_classes = (AllowAny,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = IncomeStreamSerializer
@@ -21,34 +25,38 @@ class IncomeStreamListCreateAPIView(generics.ListCreateAPIView):
 
     def list(self, request, *args, **kwargs):
         try:
-            revenue_stream = RevenueStream.objects.get(pk=self.kwargs['revenue_stream_id'])
+            revenue_stream = RevenueStream.objects.get(pk=kwargs['revenue_stream_id'])
         except RevenueStream.DoesNotExist:
             message = 'RevenueStream does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
-        queryset = revenue_stream.income_streams.all()
-        serializer = self.get_serializer(queryset, many=True)
+        get_transactions(revenue_stream)
+        income_streams = revenue_stream.income_streams.all()
+        months = months_generator(int(kwargs['year']))
+        for income_stream in income_streams:
+            transactions_value = 0
+            number_of_transactions = 0
+            transactions = income_stream.transactions.filter(
+                date_paid__contains=kwargs['year'])
+            income_stream.transactions.set(transactions)
+            for transaction in transactions:
+                transactions_value += transaction.amount
+                number_of_transactions += 1
+            g_data = []
+            if len(transactions) > 0:
+                for month in months:
+                    current_month = months.index(month) + 1
+                    value = 0
+                    for t in transactions:
+                        transaction_month = int(t.date_paid[5:7])
+                        if current_month == transaction_month:
+                            value += t.amount
+                    g_data_obj = {
+                        "value": value,
+                        "label": month
+                    }
+                    g_data.append(g_data_obj)
+            income_stream.transactions_value = transactions_value
+            income_stream.number_of_transactions = number_of_transactions
+            income_stream.graph_data = g_data
+        serializer = self.get_serializer(income_streams, many=True)
         return Response(serializer.data)
-
-    def create(self, request, *args, **kwargs):
-        try:
-            revenue_stream = RevenueStream.objects.get(pk=self.kwargs['revenue_stream_id'])
-        except RevenueStream.DoesNotExist:
-            message = 'RevenueStream does not exist'
-            return Response(message, status=status.HTTP_404_NOT_FOUND)
-        data = request.data
-        exists = IncomeStream.objects.all().filter(
-            name__icontains=data['name'],
-            revenue_stream__name__iexact=revenue_stream.name
-        )
-        if len(exists) > 0:
-            message = 'That income stream already exists'
-            return Response(message, status=status.HTTP_400_BAD_REQUEST)
-        serializer_context = {
-            'request': request,
-            'revenue_stream': revenue_stream
-        }
-        serializer = self.serializer_class(
-            data=data, context=serializer_context)
-        serializer.is_valid(raise_exception=True)
-        serializer.save(revenue_stream=revenue_stream)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
