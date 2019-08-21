@@ -2,6 +2,7 @@
 
 import requests
 import datetime
+import math
 from dateutil.relativedelta import relativedelta
 from django.shortcuts import get_object_or_404
 
@@ -41,5 +42,11 @@ def months_generator(year):
         result.append(current.strftime('%B'))
         current += relativedelta(months=1)
     return result
-    
+
+def quarter_generator(year):
+    months = months_generator(year)
+    all_quotas = ['Q1', 'Q2', 'Q3', 'Q4']
+    number_of_quotas = math.ceil(len(months)/3)
+    quotas = all_quotas[:number_of_quotas]
+    return quotas
 
