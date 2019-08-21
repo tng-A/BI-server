@@ -9,6 +9,7 @@ from .income_stream import IncomeStream
 
 
 class Transaction(CommonFieldsMixin):
+    """ Transaction model"""
     date_paid = models.CharField(max_length=255)
     receipt_number = models.CharField(max_length=255, unique=True)
     amount = models.FloatField()

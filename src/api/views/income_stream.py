@@ -19,9 +19,7 @@ from src.api.models import (
 
 
 class IncomeStreamListAPIView(ListAPIView):
-    """ Get all income streams (eg Parking) in a revenue stream
-        (eg Embu) and transactions info
-    """
+    """ Get all incomestreams (eg Parking) in a revenue stream(eg Embu) and transactions info"""
     permission_classes = (AllowAny,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = IncomeStreamSerializer
@@ -63,7 +61,7 @@ class IncomeStreamListAPIView(ListAPIView):
                             if current_m == transaction_month or current_m1 == transaction_month or current_m2 == transaction_month:
                                 value += t.amount
                         g_data_obj = {
-                            "value": value,
+                            "value": round(value, 2),
                             "label": quarter
                         }
                         g_data.append(g_data_obj)
@@ -76,7 +74,7 @@ class IncomeStreamListAPIView(ListAPIView):
                             if current_month == transaction_month:
                                 value += t.amount
                         g_data_obj = {
-                            "value": value,
+                            "value": round(value, 2),
                             "label": month
                         }
                         g_data.append(g_data_obj)
