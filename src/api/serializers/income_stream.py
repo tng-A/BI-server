@@ -28,4 +28,4 @@ class IncomeStreamSerializer(serializers.ModelSerializer):
         
         model = IncomeStream
         fields = ['name', 'number_of_transactions',
-                    'transactions_value', 'graph_data']
+                    'transactions_value', 'graph_data', 'color']
