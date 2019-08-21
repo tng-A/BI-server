@@ -28,9 +28,9 @@ class RevenueStreamListCreateAPIView(generics.ListCreateAPIView):
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         revenue_streams = product.revenue_streams.all()
         for revenue_stream in revenue_streams:
-            transactions = revenue_stream.transactions.all()
             transactions_value = 0
             number_of_transactions = 0
+            transactions = revenue_stream.transactions.all()
             for transaction in transactions:
                 transactions_value += transaction.amount
                 number_of_transactions += 1

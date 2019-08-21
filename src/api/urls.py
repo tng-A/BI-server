@@ -21,11 +21,11 @@ urlpatterns = [
     path('product_transactions/<int:product_id>/', ProductTransactionsList.as_view(), name='product_transactions'),
     path('company_revenue_streams/<int:company_id>/', CompanyRevenueStreams.as_view(), name='company_revenue_streams'),
     path('metric/', MetricListCreateAPIView.as_view(), name='metric'),    
-    # path(
-    #     'income_stream/<int:revenue_stream_id>/',
-    #     IncomeStreamListCreateAPIView.as_view(),
-    #     name='income_stream'
-    #     ),
+    path(
+        'income_stream/<int:revenue_stream_id>/<str:period_type>/<str:year>/',
+        IncomeStreamListAPIView.as_view(),
+        name='income_stream'
+        ),
     # path(
     #     'value_centre_target/<int:value_centre_id>/',
     #     ValueCentreTargetListCreateAPIView.as_view(),
