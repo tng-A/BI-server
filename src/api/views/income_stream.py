@@ -7,7 +7,11 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from src.api.serializers.income_stream import IncomeStreamSerializer
-from src.api.helpers.transactions import get_transactions, months_generator
+from src.api.helpers.transactions import (
+    get_transactions,
+    months_generator,
+    quarter_generator
+)
 from src.api.models import (
     IncomeStream,
     RevenueStream
@@ -31,7 +35,10 @@ class IncomeStreamListAPIView(ListAPIView):
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         get_transactions(revenue_stream)
         income_streams = revenue_stream.income_streams.all()
-        months = months_generator(int(kwargs['year']))
+        period_type = kwargs['period_type'].lower()
+        year = int(kwargs['year'])
+        quarters = quarter_generator(year)
+        months = months_generator(year)
         for income_stream in income_streams:
             transactions_value = 0
             number_of_transactions = 0
@@ -43,18 +50,36 @@ class IncomeStreamListAPIView(ListAPIView):
                 number_of_transactions += 1
             g_data = []
             if len(transactions) > 0:
-                for month in months:
-                    current_month = months.index(month) + 1
-                    value = 0
-                    for t in transactions:
-                        transaction_month = int(t.date_paid[5:7])
-                        if current_month == transaction_month:
-                            value += t.amount
-                    g_data_obj = {
-                        "value": value,
-                        "label": month
-                    }
-                    g_data.append(g_data_obj)
+                if period_type == 'quarterly':
+                    prev_month = 0
+                    for quarter in quarters:
+                        current_m = prev_month + 1 
+                        current_m1 = prev_month+ 2
+                        current_m2 = prev_month + 3
+                        prev_month = current_m2
+                        value = 0
+                        for t in transactions:
+                            transaction_month = int(t.date_paid[5:7])
+                            if current_m == transaction_month or current_m1 == transaction_month or current_m2 == transaction_month:
+                                value += t.amount
+                        g_data_obj = {
+                            "value": value,
+                            "label": quarter
+                        }
+                        g_data.append(g_data_obj)
+                else:                   
+                    for month in months:
+                        current_month = months.index(month) + 1
+                        value = 0
+                        for t in transactions:
+                            transaction_month = int(t.date_paid[5:7])
+                            if current_month == transaction_month:
+                                value += t.amount
+                        g_data_obj = {
+                            "value": value,
+                            "label": month
+                        }
+                        g_data.append(g_data_obj)
             income_stream.transactions_value = transactions_value
             income_stream.number_of_transactions = number_of_transactions
             income_stream.graph_data = g_data
