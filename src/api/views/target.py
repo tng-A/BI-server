@@ -185,8 +185,8 @@ class IncomeStreamTargetListCreateAPIView(ListCreateAPIView):
     
     def create(self, request, *args, **kwargs):
         try:
-            income_stream = IncomeStream.objects.get(pk=self.kwargs['income_stream_id'])
-        except Product.DoesNotExist:
+            income_stream = IncomeStream.objects.get(pk=kwargs['income_stream_id'])
+        except IncomeStream.DoesNotExist:
             message = 'IncomeStream does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         data = request.data
