@@ -21,11 +21,13 @@ class IncomeStreamSerializer(serializers.ModelSerializer):
 
     number_of_transactions = serializers.IntegerField()
     transactions_value = serializers.FloatField()
+    total_target = serializers.FloatField()
+    achievement_percentage = serializers.FloatField()
     graph_data = GraphDataSerializer(many=True)
 
     class Meta:
         """ Meta options"""
         
         model = IncomeStream
-        fields = ['name', 'number_of_transactions',
-                    'transactions_value', 'graph_data', 'color']
+        fields = ['name', 'number_of_transactions', 'total_target',
+                    'achievement_percentage', 'transactions_value', 'graph_data', 'color']
