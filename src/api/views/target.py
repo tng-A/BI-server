@@ -22,7 +22,51 @@ from src.api.models import (
     Product,
     RevenueStream,
     RevenueStreamTarget,
+    Period
 )
+
+
+class IncomeStreamTargetListCreateAPIView(ListCreateAPIView):
+    permission_classes = (AllowAny,)
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
+    serializer_class = IncomeStreamTargetSerializer
+    queryset = IncomeStreamTarget.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        try:
+            income_stream = IncomeStream.objects.get(pk=kwargs['income_stream_id'])
+        except IncomeStream.DoesNotExist:
+            message = 'IncomeStream does not exist'
+            return Response(message, status=status.HTTP_404_NOT_FOUND)
+        queryset = income_stream.targets.all()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    
+    def create(self, request, *args, **kwargs):
+        try:
+            income_stream = IncomeStream.objects.get(pk=kwargs['income_stream_id'])
+        except IncomeStream.DoesNotExist:
+            message = 'IncomeStream does not exist'
+            return Response(message, status=status.HTTP_404_NOT_FOUND)
+        data = request.data
+        metric, _ = Metric.objects.get_or_create(name=data['metric'])
+        period, _ = Period.objects.get_or_create(
+            name=data.pop('period_name'),
+            period_type=data.pop('period_type'),
+            year=data.pop('period_year')
+        )
+        serializer_context = {
+            'request': request,
+            'metric': metric,
+            'income_stream': income_stream,
+            'period': period
+        }
+        serializer = self.serializer_class(
+            data=data, context=serializer_context)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(income_stream=income_stream, metric=metric, period=period)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class RevenueStreamTargetListCreateAPIView(ListCreateAPIView):
@@ -164,53 +208,6 @@ class RevenueStreamTargetListCreateAPIView(ListCreateAPIView):
 #         serializer.is_valid(raise_exception=True)
 #         serializer.save(department=department, metric=metric)
 #         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-class IncomeStreamTargetListCreateAPIView(ListCreateAPIView):
-    permission_classes = (AllowAny,)
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
-    serializer_class = IncomeStreamTargetSerializer
-    queryset = IncomeStreamTarget.objects.all()
-
-    def list(self, request, *args, **kwargs):
-        try:
-            income_stream = IncomeStream.objects.get(pk=self.kwargs['income_stream_id'])
-        except IncomeStream.DoesNotExist:
-            message = 'IncomeStream does not exist'
-            return Response(message, status=status.HTTP_404_NOT_FOUND)
-        queryset = income_stream.targets.all()
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-
-    
-    def create(self, request, *args, **kwargs):
-        try:
-            income_stream = IncomeStream.objects.get(pk=kwargs['income_stream_id'])
-        except IncomeStream.DoesNotExist:
-            message = 'IncomeStream does not exist'
-            return Response(message, status=status.HTTP_404_NOT_FOUND)
-        data = request.data
-        exists = IncomeStreamTarget.objects.all().filter(
-            name__icontains=data['name'],
-            start__iexact=data['start'],
-            end__iexact=data['end'],
-            metric__name__icontains=data['metric'],
-            income_stream__name__iexact=income_stream.name
-        )
-        if len(exists) > 0:
-            message = 'That income stream objective already exists'
-            return Response(message, status=status.HTTP_400_BAD_REQUEST)
-        metric, _ = Metric.objects.get_or_create(name=data['metric'])
-        serializer_context = {
-            'request': request,
-            'metric': metric,
-            'income_stream': income_stream
-        }
-        serializer = self.serializer_class(
-            data=data, context=serializer_context)
-        serializer.is_valid(raise_exception=True)
-        serializer.save(income_stream=income_stream, metric=metric)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class ProductTargettListCreateAPIView(ListCreateAPIView):
