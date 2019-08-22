@@ -88,4 +88,4 @@ class IncomeStreamTargetSerializer(serializers.ModelSerializer):
     class Meta:
         """ Meta options"""
         model = IncomeStreamTarget
-        fields = ['metric', 'income_stream', 'amount', 'period']
+        fields = ['metric', 'description', 'income_stream', 'amount', 'period']
