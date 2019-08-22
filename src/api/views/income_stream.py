@@ -39,15 +39,20 @@ class IncomeStreamListAPIView(ListAPIView):
         months = months_generator(year)
         for income_stream in income_streams:
             transactions_value = 0
+            total_target = 0
             number_of_transactions = 0
             transactions = income_stream.transactions.filter(
                 date_paid__contains=kwargs['year'])
             income_stream.transactions.set(transactions)
+            targets = income_stream.targets.filter(
+                period__period_type__icontains=period_type,
+                period__year__contains=kwargs['year']
+            )
             for transaction in transactions:
                 transactions_value += transaction.amount
                 number_of_transactions += 1
             g_data = []
-            if len(transactions) > 0:
+            if len(transactions) > 0 or len(targets) > 0:
                 if period_type == 'quarterly':
                     prev_month = 0
                     for quarter in quarters:
@@ -65,6 +70,9 @@ class IncomeStreamListAPIView(ListAPIView):
                             "label": quarter
                         }
                         g_data.append(g_data_obj)
+                        for target in targets:
+                            if target.period.name == quarter:
+                                total_target += target.amount
                 else:                   
                     for month in months:
                         current_month = months.index(month) + 1
@@ -78,8 +86,17 @@ class IncomeStreamListAPIView(ListAPIView):
                             "label": month
                         }
                         g_data.append(g_data_obj)
+                        for target in targets:
+                            if target.period.name == month:
+                                total_target += target.amount
+            try:
+                percentage = round((transactions_value / total_target) * 100, 2)
+            except ZeroDivisionError:
+                percentage = 0
             income_stream.transactions_value = transactions_value
             income_stream.number_of_transactions = number_of_transactions
+            income_stream.total_target = total_target
+            income_stream.achievement_percentage = percentage
             income_stream.graph_data = g_data
         serializer = self.get_serializer(income_streams, many=True)
         return Response(serializer.data)
