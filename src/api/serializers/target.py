@@ -73,6 +73,7 @@ class IncomeStreamTargetSerializer(serializers.ModelSerializer):
 
     income_stream = serializers.SerializerMethodField()
     metric = serializers.SerializerMethodField()
+    period = serializers.SerializerMethodField()
 
     def get_income_stream(self, obj):
         return obj.income_stream.name
@@ -80,9 +81,11 @@ class IncomeStreamTargetSerializer(serializers.ModelSerializer):
     def get_metric(self, obj):
         return obj.metric.name
 
+    def get_period(self, obj):
+        name = '{} {}'.format(obj.period.name, obj.period.year)
+        return name
 
     class Meta:
         """ Meta options"""
         model = IncomeStreamTarget
-        fields = ['metric', 'income_stream', 'amount']
-
+        fields = ['metric', 'income_stream', 'amount', 'period']

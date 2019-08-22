@@ -10,6 +10,7 @@ from .analytics import (
 urlpatterns = [
     path('company/', CompanyListCreateAPIView.as_view(), name='company'),
     path('channel/', ChannelListCreateAPIView.as_view(), name='channel'),
+    path('period/', PeriodListAPIView.as_view(), name='period'),
     path('value_centre/<int:company_id>/', ValueCentreListCreateAPIView.as_view(), name='value_centre'),
     path('product/<int:value_centre_id>/', ProductListCreateAPIView.as_view(), name='product'),
     path(
@@ -26,6 +27,11 @@ urlpatterns = [
         IncomeStreamListAPIView.as_view(),
         name='income_stream'
         ),
+    path(
+        'income_stream_target/<int:income_stream_id>/',
+        IncomeStreamTargetListCreateAPIView.as_view(),
+        name='income_stream_target'
+        ),
     # path(
     #     'value_centre_target/<int:value_centre_id>/',
     #     ValueCentreTargetListCreateAPIView.as_view(),
@@ -41,11 +47,7 @@ urlpatterns = [
     #     RevenueStreamTargetListCreateAPIView.as_view(),
     #     name='revenue_stream_target'
     #     ),
-    # path(
-    #     'income_stream_target/<int:income_stream_id>/',
-    #     IncomeStreamTargetListCreateAPIView.as_view(),
-    #     name='income_stream_target'
-    #     ),
+    
     # path(
     #     'value_centre_okr/<int:value_centre_id>/',
     #     ValueCentreOKRListCreateAPIView.as_view(),

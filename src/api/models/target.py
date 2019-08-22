@@ -14,10 +14,6 @@ from .period import Period
 
 class ObjectiveMixin(CommonFieldsMixin):
     amount = models.IntegerField(null=False, blank=False)
-    name = models.CharField(max_length=50, default='test')
-
-    def __str__(self):
-        return self.name
         
     class Meta:
         abstract = True
@@ -103,10 +99,13 @@ class IncomeStreamTarget(ObjectiveMixin):
         on_delete=models.PROTECT,
         null=False,
         blank=False,
-        related_name='income_stream_targets'
+        related_name='income_streams'
     )
     period = models.ForeignKey(
         Period,
         on_delete=models.PROTECT,
-        related_name='income_stream_periods'
+        related_name='income_streams'
     )
+
+    def __str__(self):
+        return '{} {}'.format(self.period.name, self.period.year)
