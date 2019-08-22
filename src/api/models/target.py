@@ -14,6 +14,7 @@ from .period import Period
 
 class ObjectiveMixin(CommonFieldsMixin):
     amount = models.IntegerField(null=False, blank=False)
+    description = models.CharField(max_length=255, null=True, blank=True)
         
     class Meta:
         abstract = True
