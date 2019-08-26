@@ -45,6 +45,12 @@ def get_all_months_and_quotas():
         all_months.append(datetime.date(2008, i, 1).strftime('%B'))
     return all_months, all_quarters
 
+def get_all_days():
+    all_days = []
+    for i in range(1,8):
+        all_days.append(datetime.date(2019, i, 1).strftime('%A'))
+    return all_days
+
 def months_generator(year):
     """ Generate months"""
     result = []
