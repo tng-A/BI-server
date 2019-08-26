@@ -1,5 +1,7 @@
 """ IncomeStream views"""
 
+import datetime
+
 from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
@@ -55,6 +57,31 @@ class IncomeStreamListAPIView(ListAPIView):
                 number_of_transactions += 1
             g_data = []
             if len(transactions) > 0 or len(targets) > 0:
+                if period_type == 'past_month':
+                    weeks = ['Week1', 'Week2', 'Week3', 'Week4']
+                    start_date = datetime.datetime.now() + datetime.timedelta(-30)
+                    for week in weeks:
+                        value = 0
+                        prev_week_end = start_date
+                        format_week_end = prev_week_end.strftime('%Y-%m-%d')
+                        current_week_end = (prev_week_end + datetime.timedelta(7)).strftime('%Y-%m-%d')
+                        for t in transactions:
+                            transaction_date = t.date_paid[:9]
+                            if transaction_date > format_week_end and transaction_date <= current_week_end:
+                                value += t.amount
+                        g_data_obj = {
+                            "value": round(value, 2),
+                            "label": week
+                        }
+                        g_data.append(g_data_obj)
+                    targets = income_stream.targets.filter(period__year__contains=kwargs['year'])
+                    for target in targets:
+                        end_date = datetime.datetime.now().strftime('%B').lower()
+                        start_date_month = start_date.strftime('%B')
+                        period_name = target.period.name.lower()
+                        if period_name == end_date or period_name == start_date_month.lower():
+                            total_target += target.amount
+                    
                 if period_type == 'quarterly':
                     prev_month = 0
                     for quarter in quarters:
@@ -65,7 +92,9 @@ class IncomeStreamListAPIView(ListAPIView):
                         value = 0
                         for t in transactions:
                             transaction_month = int(t.date_paid[5:7])
-                            if current_m == transaction_month or current_m1 == transaction_month or current_m2 == transaction_month:
+                            if current_m == transaction_month \
+                                or current_m1 == transaction_month \
+                                    or current_m2 == transaction_month:
                                 value += t.amount
                         g_data_obj = {
                             "value": round(value, 2),
