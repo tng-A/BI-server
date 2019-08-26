@@ -37,8 +37,16 @@ def get_transactions(revenue_stream):
                     continue   
     return Transaction.objects.all()
 
+def get_all_months_and_quotas():
+    """ Get all months in an year helper"""
+    all_months = []
+    all_quarters = ['Q1', 'Q2', 'Q3', 'Q4']
+    for i in range(1,13):
+        all_months.append(datetime.date(2008, i, 1).strftime('%B'))
+    return all_months, all_quarters
+
 def months_generator(year):
-    """ Generate months in an year"""
+    """ Generate months"""
     result = []
     today = datetime.date.today()
     current = datetime.date(year, 1, 1)
