@@ -10,7 +10,8 @@ from src.api.serializers.income_stream import IncomeStreamSerializer
 from src.api.helpers.transactions import (
     get_transactions,
     months_generator,
-    quarter_generator
+    quarter_generator,
+    get_all_months_and_quotas
 )
 from src.api.models import (
     IncomeStream,
@@ -37,6 +38,7 @@ class IncomeStreamListAPIView(ListAPIView):
         year = int(kwargs['year'])
         quarters = quarter_generator(year)
         months = months_generator(year)
+        all_months, all_quarters = get_all_months_and_quotas()
         for income_stream in income_streams:
             transactions_value = 0
             total_target = 0
@@ -70,10 +72,11 @@ class IncomeStreamListAPIView(ListAPIView):
                             "label": quarter
                         }
                         g_data.append(g_data_obj)
+                    for q in all_quarters:
                         for target in targets:
-                            if target.period.name == quarter:
+                            if target.period.name.lower() == q.lower():
                                 total_target += target.amount
-                else:                   
+                if period_type == 'monthly':
                     for month in months:
                         current_month = months.index(month) + 1
                         value = 0
@@ -86,8 +89,9 @@ class IncomeStreamListAPIView(ListAPIView):
                             "label": month
                         }
                         g_data.append(g_data_obj)
+                    for m in all_months:
                         for target in targets:
-                            if target.period.name == month:
+                            if target.period.name.lower() == m.lower():
                                 total_target += target.amount
             try:
                 percentage = round((transactions_value / total_target) * 100, 2)
