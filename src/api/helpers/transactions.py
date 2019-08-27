@@ -7,6 +7,8 @@ from dateutil.relativedelta import relativedelta
 from django.shortcuts import get_object_or_404
 
 from src.api.models import Transaction, IncomeStream
+from src.api.helpers.percentage import get_percentage
+
 
 transactions_url = os.getenv('TRANSACTONS_URL')
 cred = os.getenv('CRED')
@@ -14,16 +16,17 @@ cred = os.getenv('CRED')
 
 def get_transactions(revenue_stream):
     """Get transactions from a third party api and populate our db"""
-    prev_trans = 0
+    format_transaction_url = transactions_url.format(revenue_stream.name.lower())
     try:
-        response = requests.get(transactions_url,auth=(cred, cred))
+        response = requests.get(format_transaction_url,auth=(cred, cred))
     except Exception as err:
         print(err)
+        return
     for res in response.json()['results']:
         for item in res['results']:
             transactions = item['items']
             income_stream, _ = IncomeStream.objects.get_or_create(
-                name=item['revenue_stream'],
+                name=item['revenue_stream'] or 'Noname',
                 revenue_stream=revenue_stream)
             for transaction in transactions:
                 try:
@@ -34,8 +37,8 @@ def get_transactions(revenue_stream):
                     income_stream=income_stream
                     )
                 except:
-                    continue   
-    return Transaction.objects.all()
+                    continue
+    return
 
 def get_all_months_and_quotas():
     """ Get all months in an year helper"""
@@ -225,4 +228,47 @@ class TransactionsFilterHelper():
             g_data
         )
         
+class IncomeStreamTransactionsFilter:
 
+    def get_transactions_data(income_stream, period_type, transactions, targets, year):
+        if period_type == 'past_week':
+            (
+            transactions_value,
+            total_target,
+            number_of_transactions,
+            g_data
+            ) = TransactionsFilterHelper.get_past_week_transactions_data(transactions)
+        if period_type == 'past_month':
+            (
+            transactions_value,
+            total_target,
+            number_of_transactions,
+            g_data
+            ) = TransactionsFilterHelper.get_past_month_transactions_data(
+                transactions, targets
+            )
+        if period_type == 'quarterly':
+            (
+            transactions_value,
+            total_target,
+            number_of_transactions,
+            g_data
+            ) = TransactionsFilterHelper.get_quarterly_transactions_data(
+                transactions, targets, year
+            )
+        if period_type == 'monthly':
+            (
+            transactions_value,
+            total_target,
+            number_of_transactions,
+            g_data
+            ) = TransactionsFilterHelper.get_monthly_transactions_data(
+                transactions, targets, year
+            )
+        percentage = get_percentage(transactions_value, total_target)
+        income_stream.transactions_value = transactions_value
+        income_stream.number_of_transactions = number_of_transactions
+        income_stream.total_target = total_target
+        income_stream.achievement_percentage = percentage
+        income_stream.graph_data = g_data
+        return income_stream
