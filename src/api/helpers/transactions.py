@@ -47,8 +47,12 @@ def get_all_months_and_quotas():
 
 def get_all_days():
     all_days = []
+    today = datetime.date.today()
+    num_of_days = 7
     for i in range(1,8):
-        all_days.append(datetime.date(2019, i, 1).strftime('%A'))
+        start_day = today + datetime.timedelta(-num_of_days)
+        all_days.append(start_day.strftime('%A'))
+        num_of_days -= 1
     return all_days
 
 def months_generator(year):
