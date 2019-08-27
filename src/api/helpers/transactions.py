@@ -18,11 +18,11 @@ def get_transactions(revenue_stream):
     """Get transactions from a third party api and populate our db"""
     format_transaction_url = transactions_url.format(revenue_stream.name.lower())
     try:
-        response = requests.get(format_transaction_url,auth=(cred, cred))
+        response = requests.get(format_transaction_url,auth=(cred, cred)).json()['results']
     except Exception as err:
         print(err)
         return
-    for res in response.json()['results']:
+    for res in response:
         for item in res['results']:
             transactions = item['items']
             income_stream, _ = IncomeStream.objects.get_or_create(

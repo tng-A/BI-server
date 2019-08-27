@@ -1,7 +1,10 @@
 from .company import CompanyListCreateAPIView
 from .channel import ChannelListCreateAPIView
 from .value_centre import ValueCentreListCreateAPIView
-from .product import ProductListCreateAPIView
+from .product import (
+    ProductListAPIView,
+    ProductCreateAPIView
+)
 from .revenue_stream import (
     RevenueStreamCreateAPIView,
     RevenueStreamListAPIView
