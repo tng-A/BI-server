@@ -1,7 +1,10 @@
 """ ValueCentre views"""
 from django.db.models import Sum
 from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import (
+    ListAPIView,
+    CreateAPIView
+)
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
@@ -11,10 +14,14 @@ from src.api.models import (
     ValueCentre,
     Company
 )
+from src.api.helpers.transactions import (
+    get_transactions,
+    IncomeStreamTransactionsFilter
+)
 
 
-class ValueCentreListCreateAPIView(ListCreateAPIView):
-    """ List/Create value centre(s)"""
+class ValueCentreListAPIView(ListAPIView):
+    """ List value centres and their transactions data"""
     permission_classes = (AllowAny,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = ValueCentreSerializer
@@ -26,27 +33,47 @@ class ValueCentreListCreateAPIView(ListCreateAPIView):
         except Company.DoesNotExist:
             message = 'Company does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
-        queryset = company.value_centres.all()
-        # value_centres = []
-        for v_c in queryset:
-            okr = v_c.okrs.all()
-            target = v_c.targets.all()
-            total_target = v_c.targets.aggregate(
-                Sum('amount'))['amount__sum'] or 0
-            total_okr = v_c.okrs.aggregate(Sum('amount'))['amount__sum'] or 0
-            try:
-                percentage = round((total_okr / total_target) * 100, 2)
-            except ZeroDivisionError:
-                percentage = 0
-            v_c.objective_key_results = okr
-            v_c.value_centre_targets = target
-            v_c.percentage = percentage
-            v_c.total_target = total_target
-            v_c.total_okr = total_okr
-
-        serializer = self.get_serializer(queryset, many=True)
+        value_centres = company.value_centres.all()
+        period_type = kwargs['period_type'].lower()
+        year = int(kwargs['year'])
+        for value_centre in value_centres:
+            products = value_centre.products.all()
+            product_data = []
+            for product in products:
+                revenue_streams = product.revenue_streams.all()
+                revenue_stream_data = []
+                for revenue_stream in revenue_streams:
+                    get_transactions(revenue_stream)
+                    income_streams = revenue_stream.income_streams.all()
+                    income_stream_transaction_data = []
+                    for income_stream in income_streams:
+                        transactions = income_stream.transactions.all()
+                        targets = income_stream.targets.filter(
+                            period__period_type__icontains=period_type,
+                            period__year__contains=kwargs['year']
+                        )
+                        if period_type == 'past_week' or period_type == 'past_month':
+                            targets = income_stream.targets.filter(
+                                period__year__contains=kwargs['year'])
+                        income_stream = IncomeStreamTransactionsFilter.get_transactions_data(
+                            income_stream, period_type, transactions, targets, year)
+                        income_stream_transaction_data.append(income_stream)
+                    revenue_stream.income_stream_transaction_data = income_stream_transaction_data
+                    revenue_stream_data.append(revenue_stream)
+                product.revenue_stream_data = revenue_stream_data
+                product_data.append(product)
+                value_centre.product_data = product_data
+        serializer = self.get_serializer(value_centres, many=True)
         return Response(serializer.data)
 
+
+class ValueCentreCreateAPIView(CreateAPIView):
+    """ Create value centre"""
+    permission_classes = (AllowAny,)
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
+    serializer_class = ValueCentreSerializer
+    queryset = ValueCentre.objects.all()
+    
     def create(self, request, *args, **kwargs):
         try:
             company = Company.objects.get(pk=kwargs['company_id'])
