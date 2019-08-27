@@ -9,10 +9,15 @@ from .transaction import TransactionSerializer
 
 
 class GraphDataSerializer(serializers.Serializer):
+    """
+    Serializer for the graph data object to help with
+    displaying data on the frontend
+    """
     label = serializers.CharField()
     value = serializers.FloatField()
 
     class Meta:
+        """ Meta options"""
         fields = '__all__'
 
 
