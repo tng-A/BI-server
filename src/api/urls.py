@@ -11,7 +11,12 @@ urlpatterns = [
     path('company/', CompanyListCreateAPIView.as_view(), name='company'),
     path('channel/', ChannelListCreateAPIView.as_view(), name='channel'),
     path('period/', PeriodListAPIView.as_view(), name='period'),
-    path('value_centre/<int:company_id>/', ValueCentreListCreateAPIView.as_view(), name='value_centre'),
+    path('value_centre/<int:company_id>/', ValueCentreCreateAPIView.as_view(), name='value_centre'),
+    path(
+        'value_centre/<int:company_id>/<str:period_type>/<str:year>/',
+        ValueCentreListAPIView.as_view(),
+        name='value_centre_list'),
+
     path(
         'product/<int:value_centre_id>/<str:period_type>/<str:year>/',
         ProductListAPIView.as_view(),

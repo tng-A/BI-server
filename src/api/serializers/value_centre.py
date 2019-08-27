@@ -3,24 +3,18 @@
 from rest_framework import serializers
 
 from src.api.models.value_centre import ValueCentre
-from src.api.serializers.company import CompanySerializer
-from src.api.serializers.okr import ValueCentreOKRSerializer
-from src.api.serializers.target import ValueCentreTargetSerializer
-
+from src.api.serializers.product import ProductSerializer
 
 class ValueCentreSerializer(serializers.ModelSerializer):
     """ ValueCentre model serializer"""
-    company = CompanySerializer(read_only=True)
-    total_target = serializers.FloatField(read_only=True)
-    total_okr = serializers.FloatField(read_only=True)
-    objective_key_results = ValueCentreOKRSerializer(many=True, read_only=True)
-    percentage = serializers.FloatField(read_only=True)
+    company = serializers.SerializerMethodField()
+    product_data = ProductSerializer(many=True, read_only=True)
 
+    def get_company(self, obj):
+        return obj.company.name
 
     class Meta:
         """ Meta options"""
         
         model = ValueCentre
-        fields = [ 'id', 'name', 'color', 'total_target',
-                    'total_okr', 'percentage',
-                    'objective_key_results', 'company']
+        fields = [ 'id', 'name', 'color', 'company', 'product_data']
