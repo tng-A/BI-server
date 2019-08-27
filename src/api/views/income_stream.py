@@ -11,11 +11,7 @@ from rest_framework import status
 from src.api.serializers.income_stream import IncomeStreamSerializer
 from src.api.helpers.transactions import (
     get_transactions,
-    months_generator,
-    quarter_generator,
-    get_all_months_and_quotas,
-    get_all_days,
-    TransactionsFilterHelper
+    IncomeStreamTransactionsFilter
 )
 from src.api.helpers.percentage import get_percentage
 from src.api.models import (
@@ -25,7 +21,8 @@ from src.api.models import (
 
 
 class IncomeStreamListAPIView(ListAPIView):
-    """ Get all incomestreams (eg Parking) in a revenue stream(eg Embu) and transactions info"""
+    """ Get all incomestreams (eg Parking) in a
+        revenue stream(eg Embu) and transactions info."""
     permission_classes = (AllowAny,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = IncomeStreamSerializer
@@ -50,45 +47,7 @@ class IncomeStreamListAPIView(ListAPIView):
             if period_type == 'past_week' or period_type == 'past_month':
                 targets = income_stream.targets.filter(
                     period__year__contains=kwargs['year'])
-            if period_type == 'past_week':
-                (
-                transactions_value,
-                total_target,
-                number_of_transactions,
-                g_data
-                ) = TransactionsFilterHelper.get_past_week_transactions_data(transactions)
-            if period_type == 'past_month':
-                (
-                transactions_value,
-                total_target,
-                number_of_transactions,
-                g_data
-                ) = TransactionsFilterHelper.get_past_month_transactions_data(
-                    transactions, targets
-                )
-            if period_type == 'quarterly':
-                (
-                transactions_value,
-                total_target,
-                number_of_transactions,
-                g_data
-                ) = TransactionsFilterHelper.get_quarterly_transactions_data(
-                    transactions, targets, year
-                )
-            if period_type == 'monthly':
-                (
-                transactions_value,
-                total_target,
-                number_of_transactions,
-                g_data
-                ) = TransactionsFilterHelper.get_monthly_transactions_data(
-                    transactions, targets, year
-                )
-            percentage = get_percentage(transactions_value, total_target)
-            income_stream.transactions_value = transactions_value
-            income_stream.number_of_transactions = number_of_transactions
-            income_stream.total_target = total_target
-            income_stream.achievement_percentage = percentage
-            income_stream.graph_data = g_data
+            income_stream = IncomeStreamTransactionsFilter.get_transactions_data(
+                income_stream, period_type, transactions, targets, year)
         serializer = self.get_serializer(income_streams, many=True)
         return Response(serializer.data)

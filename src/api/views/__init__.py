@@ -2,7 +2,10 @@ from .company import CompanyListCreateAPIView
 from .channel import ChannelListCreateAPIView
 from .value_centre import ValueCentreListCreateAPIView
 from .product import ProductListCreateAPIView
-from .revenue_stream import RevenueStreamListCreateAPIView
+from .revenue_stream import (
+    RevenueStreamCreateAPIView,
+    RevenueStreamListAPIView
+)
 from .income_stream import IncomeStreamListAPIView
 from .period import PeriodListAPIView
 from .target import (

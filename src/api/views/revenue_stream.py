@@ -1,7 +1,10 @@
 """ RevenueStream views"""
 
 from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
-from rest_framework import generics
+from rest_framework.generics import (
+    ListAPIView,
+    CreateAPIView
+)
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
@@ -11,10 +14,14 @@ from src.api.models import (
     RevenueStream,
     Product
 )
+from src.api.helpers.transactions import (
+    get_transactions,
+    IncomeStreamTransactionsFilter
+)
 
 
-class RevenueStreamListCreateAPIView(generics.ListCreateAPIView):
-    """ List/Create revenue stream(s)"""
+class RevenueStreamListAPIView(ListAPIView):
+    """ List revenue streams and transactions data"""
     permission_classes = (AllowAny,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = RevenueStreamSerializer
@@ -27,18 +34,37 @@ class RevenueStreamListCreateAPIView(generics.ListCreateAPIView):
             message = 'Product does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         revenue_streams = product.revenue_streams.all()
+        period_type = kwargs['period_type'].lower()
+        year = int(kwargs['year'])
         for revenue_stream in revenue_streams:
-            transactions_value = 0
-            number_of_transactions = 0
-            transactions = revenue_stream.transactions.all()
-            for transaction in transactions:
-                transactions_value += transaction.amount
-                number_of_transactions += 1
-            revenue_stream.transactions_value = transactions_value
-            revenue_stream.number_of_transactions = number_of_transactions
+            get_transactions(revenue_stream)
+            income_streams = revenue_stream.income_streams.all()
+            income_stream_transaction_data = []
+            for income_stream in income_streams:
+                transactions = income_stream.transactions.all()
+                targets = income_stream.targets.filter(
+                    period__period_type__icontains=period_type,
+                    period__year__contains=kwargs['year']
+                )
+                if period_type == 'past_week' or period_type == 'past_month':
+                    targets = income_stream.targets.filter(
+                        period__year__contains=kwargs['year'])
+                income_stream = IncomeStreamTransactionsFilter.get_transactions_data(
+                    income_stream, period_type, transactions, targets, year)
+                income_stream_transaction_data.append(income_stream)
+            revenue_stream.income_stream_transaction_data = income_stream_transaction_data
         serializer = self.get_serializer(revenue_streams, many=True)
         return Response(serializer.data)
 
+
+
+class RevenueStreamCreateAPIView(CreateAPIView):
+    """ Create a revenue stream"""
+    permission_classes = (AllowAny,)
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
+    serializer_class = RevenueStreamSerializer
+    queryset = RevenueStream.objects.all()
+    
     def create(self, request, *args, **kwargs):
         try:
             product = Product.objects.get(pk=kwargs['product_id'])

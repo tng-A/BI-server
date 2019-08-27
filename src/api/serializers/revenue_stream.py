@@ -3,15 +3,13 @@
 from rest_framework import serializers
 
 from src.api.models.revenue_stream import RevenueStream
-from .transaction import TransactionSerializer
+from .income_stream import IncomeStreamSerializer
 
 class RevenueStreamSerializer(serializers.ModelSerializer):
     """ RevenueStream model serializer"""
 
     product = serializers.SerializerMethodField()
-    number_of_transactions = serializers.IntegerField(read_only=True)
-    transactions_value = serializers.FloatField(read_only=True)
-    transactions = TransactionSerializer(many=True, read_only=True)
+    income_stream_transaction_data = IncomeStreamSerializer(many=True)
 
     def get_product(self, obj):
         return obj.product.name
@@ -21,4 +19,4 @@ class RevenueStreamSerializer(serializers.ModelSerializer):
         """ Meta options"""
         
         model = RevenueStream
-        fields = ['id', 'name', 'product', 'number_of_transactions', 'transactions_value', 'transactions']
+        fields = ['id', 'product', 'name', 'income_stream_transaction_data']
