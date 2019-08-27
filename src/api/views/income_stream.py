@@ -1,5 +1,7 @@
 """ IncomeStream views"""
 
+import datetime
+
 from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
@@ -11,7 +13,8 @@ from src.api.helpers.transactions import (
     get_transactions,
     months_generator,
     quarter_generator,
-    get_all_months_and_quotas
+    get_all_months_and_quotas,
+    get_all_days
 )
 from src.api.models import (
     IncomeStream,
@@ -43,56 +46,104 @@ class IncomeStreamListAPIView(ListAPIView):
             transactions_value = 0
             total_target = 0
             number_of_transactions = 0
-            transactions = income_stream.transactions.filter(
-                date_paid__contains=kwargs['year'])
+            transactions = income_stream.transactions.all()
             income_stream.transactions.set(transactions)
             targets = income_stream.targets.filter(
                 period__period_type__icontains=period_type,
                 period__year__contains=kwargs['year']
             )
-            for transaction in transactions:
-                transactions_value += transaction.amount
-                number_of_transactions += 1
             g_data = []
-            if len(transactions) > 0 or len(targets) > 0:
-                if period_type == 'quarterly':
-                    prev_month = 0
-                    for quarter in quarters:
-                        current_m = prev_month + 1 
-                        current_m1 = prev_month+ 2
-                        current_m2 = prev_month + 3
-                        prev_month = current_m2
-                        value = 0
-                        for t in transactions:
-                            transaction_month = int(t.date_paid[5:7])
-                            if current_m == transaction_month or current_m1 == transaction_month or current_m2 == transaction_month:
-                                value += t.amount
-                        g_data_obj = {
-                            "value": round(value, 2),
-                            "label": quarter
-                        }
-                        g_data.append(g_data_obj)
-                    for q in all_quarters:
-                        for target in targets:
-                            if target.period.name.lower() == q.lower():
-                                total_target += target.amount
-                if period_type == 'monthly':
-                    for month in months:
-                        current_month = months.index(month) + 1
-                        value = 0
-                        for t in transactions:
-                            transaction_month = int(t.date_paid[5:7])
-                            if current_month == transaction_month:
-                                value += t.amount
-                        g_data_obj = {
-                            "value": round(value, 2),
-                            "label": month
-                        }
-                        g_data.append(g_data_obj)
-                    for m in all_months:
-                        for target in targets:
-                            if target.period.name.lower() == m.lower():
-                                total_target += target.amount
+            if period_type == 'past_week':
+                days = get_all_days()
+                num_of_days = 7
+                for day in days:
+                    start_date = datetime.datetime.now() + datetime.timedelta(-num_of_days)
+                    value = 0
+                    day_date = start_date.strftime('%Y-%m-%d')[5:10]
+                    for t in transactions:
+                        transaction_date = t.date_paid[5:10]
+                        if transaction_date == day_date:
+                            transactions_value += t.amount
+                            number_of_transactions += 1
+                            value += t.amount
+                    num_of_days = num_of_days - 1
+                    g_data_obj = {
+                        "value": round(value, 2),
+                        "label": day
+                    }
+                    g_data.append(g_data_obj)
+            if period_type == 'past_month':
+                weeks = ['Week1', 'Week2', 'Week3', 'Week4']
+                start_date = datetime.datetime.now() + datetime.timedelta(-30)
+                for week in weeks:
+                    value = 0
+                    prev_week_end = start_date
+                    format_week_end = prev_week_end.strftime('%Y-%m-%d')
+                    current_week_end = (prev_week_end + datetime.timedelta(7)).strftime('%Y-%m-%d')
+                    for t in transactions:
+                        transaction_date = t.date_paid[:9]
+                        if transaction_date > format_week_end and transaction_date <= current_week_end:
+                            transactions_value += t.amount
+                            number_of_transactions += 1
+                            value += t.amount
+                    g_data_obj = {
+                        "value": round(value, 2),
+                        "label": week
+                    }
+                    g_data.append(g_data_obj)
+                targets = income_stream.targets.filter(period__year__contains=kwargs['year'])
+                for target in targets:
+                    end_date = datetime.datetime.now().strftime('%B').lower()
+                    start_date_month = start_date.strftime('%B')
+                    period_name = target.period.name.lower()
+                    if period_name == end_date or period_name == start_date_month.lower():
+                        total_target += target.amount
+            
+            if period_type == 'quarterly':
+                prev_month = 0
+                for quarter in quarters:
+                    current_m = prev_month + 1 
+                    current_m1 = prev_month+ 2
+                    current_m2 = prev_month + 3
+                    prev_month = current_m2
+                    value = 0
+                    for t in transactions:
+                        transaction_month = int(t.date_paid[5:7])
+                        if current_m == transaction_month \
+                            or current_m1 == transaction_month \
+                                or current_m2 == transaction_month:
+                            value += t.amount
+                            transactions_value += t.amount
+                            number_of_transactions += 1
+                    g_data_obj = {
+                        "value": round(value, 2),
+                        "label": quarter
+                    }
+                    g_data.append(g_data_obj)
+                for q in all_quarters:
+                    for target in targets:
+                        if target.period.name.lower() == q.lower():
+                            total_target += target.amount
+            if period_type == 'monthly':
+                for month in months:
+                    current_month = months.index(month) + 1
+                    value = 0
+                    for t in transactions:
+                        transaction_month = int(t.date_paid[5:7])
+                        if current_month == transaction_month:
+                            value += t.amount
+                            transactions_value += t.amount
+                            number_of_transactions += 1
+                    g_data_obj = {
+                        "value": round(value, 2),
+                        "label": month
+                    }
+                    g_data.append(g_data_obj)
+                for m in all_months:
+                    for target in targets:
+                        if target.period.name.lower() == m.lower():
+                            total_target += target.amount
+                                
             try:
                 percentage = round((transactions_value / total_target) * 100, 2)
             except ZeroDivisionError:
