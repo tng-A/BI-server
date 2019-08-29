@@ -46,21 +46,21 @@ urlpatterns = [
         IncomeStreamTargetListCreateAPIView.as_view(),
         name='income_stream_target'
         ),
-    # path(
-    #     'value_centre_target/<int:value_centre_id>/',
-    #     ValueCentreTargetListCreateAPIView.as_view(),
-    #     name='value_centre_target'
-    #     ),
-    # path(
-    #     'product_target/<int:product_id>/',
-    #     ProductTargettListCreateAPIView.as_view(),
-    #     name='product_target'
-    #     ),
-    # path(
-    #     'revenue_stream_target/<int:revenue_stream_id>/',
-    #     RevenueStreamTargetListCreateAPIView.as_view(),
-    #     name='revenue_stream_target'
-    #     ),
+    path(
+        'value_centre_target/<int:value_centre_id>/',
+        ValueCentreTargetListCreateAPIView.as_view(),
+        name='value_centre_target'
+        ),
+    path(
+        'product_target/<int:product_id>/',
+        ProductTargettListCreateAPIView.as_view(),
+        name='product_target'
+        ),
+    path(
+        'revenue_stream_target/<int:revenue_stream_id>/',
+        RevenueStreamTargetListCreateAPIView.as_view(),
+        name='revenue_stream_target'
+        ),
     
     # path(
     #     'value_centre_okr/<int:value_centre_id>/',
