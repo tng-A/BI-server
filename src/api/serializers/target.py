@@ -18,6 +18,7 @@ class ValueCentreTargetSerializer(serializers.ModelSerializer):
 
     value_centre = serializers.SerializerMethodField()
     metric = serializers.SerializerMethodField()
+    period = serializers.SerializerMethodField()
 
     def get_value_centre(self, obj):
         return obj.value_centre.name
@@ -25,17 +26,22 @@ class ValueCentreTargetSerializer(serializers.ModelSerializer):
     def get_metric(self, obj):
         return obj.metric.name
 
+    def get_period(self, obj):
+        name = '{} {}'.format(obj.period.name, obj.period.year)
+        return name
 
     class Meta:
         """ Meta options"""
         model = ValueCentreTarget
-        fields = ['metric', 'value_centre', 'amount']
+        fields = ['metric', 'description', 'value_centre', 'amount', 'period']
+
 
 class ProductTargetSerializer(serializers.ModelSerializer):
     """ ProductTarget serializer"""
 
     product = serializers.SerializerMethodField()
     metric = serializers.SerializerMethodField()
+    period = serializers.SerializerMethodField()
 
     def get_product(self, obj):
         return obj.product.name
@@ -43,11 +49,15 @@ class ProductTargetSerializer(serializers.ModelSerializer):
     def get_metric(self, obj):
         return obj.metric.name
 
+    def get_period(self, obj):
+        name = '{} {}'.format(obj.period.name, obj.period.year)
+        return name
 
     class Meta:
         """ Meta options"""
         model = ProductTarget
-        fields = ['metric', 'product', 'amount']
+        fields = ['metric', 'description', 'product', 'amount', 'period']
+
 
 
 class RevenueStreamTargetSerializer(serializers.ModelSerializer):
@@ -55,6 +65,7 @@ class RevenueStreamTargetSerializer(serializers.ModelSerializer):
 
     revenue_stream = serializers.SerializerMethodField()
     metric = serializers.SerializerMethodField()
+    period = serializers.SerializerMethodField()
 
     def get_revenue_stream(self, obj):
         return obj.revenue_stream.name
@@ -62,11 +73,16 @@ class RevenueStreamTargetSerializer(serializers.ModelSerializer):
     def get_metric(self, obj):
         return obj.metric.name
 
+    def get_period(self, obj):
+        name = '{} {}'.format(obj.period.name, obj.period.year)
+        return name
+
 
     class Meta:
         """ Meta options"""
         model = RevenueStreamTarget
-        fields = ['metric', 'revenue_stream', 'amount']
+        fields = ['metric', 'description', 'revenue_stream', 'amount', 'period']
+
 
 class IncomeStreamTargetSerializer(serializers.ModelSerializer):
     """ IncomeStreamTarget serializer"""
