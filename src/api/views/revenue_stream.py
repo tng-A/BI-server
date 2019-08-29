@@ -37,22 +37,34 @@ class RevenueStreamListAPIView(ListAPIView):
         period_type = kwargs['period_type'].lower()
         year = int(kwargs['year'])
         for revenue_stream in revenue_streams:
+            transactions = []
+            targets = []
             get_transactions(revenue_stream)
             income_streams = revenue_stream.income_streams.all()
-            income_stream_transaction_data = []
             for income_stream in income_streams:
-                transactions = income_stream.transactions.all()
-                targets = income_stream.targets.filter(
+                transactions += income_stream.transactions.all()
+                # TODO , CALCULATE TARGETS AT REVENUE STREAM LEVEL
+                if period_type == 'past_week' or period_type == 'past_month':
+                    targets += income_stream.targets.filter(
+                        period__year__contains=kwargs['year'])
+                else:
+                    targets += income_stream.targets.filter(
                     period__period_type__icontains=period_type,
                     period__year__contains=kwargs['year']
                 )
-                if period_type == 'past_week' or period_type == 'past_month':
-                    targets = income_stream.targets.filter(
-                        period__year__contains=kwargs['year'])
-                income_stream = IncomeStreamTransactionsFilter.get_transactions_data(
-                    income_stream, period_type, transactions, targets, year)
-                income_stream_transaction_data.append(income_stream)
-            revenue_stream.income_stream_transaction_data = income_stream_transaction_data
+            (
+            percentage,
+            transactions_value,
+            total_target,
+            number_of_transactions,
+            g_data
+            ) = IncomeStreamTransactionsFilter.get_transactions_data(
+                period_type, transactions, targets, year)
+            revenue_stream.transactions_value = transactions_value
+            revenue_stream.number_of_transactions = number_of_transactions
+            revenue_stream.total_target = total_target
+            revenue_stream.achievement_percentage = percentage
+            revenue_stream.graph_data = g_data
         serializer = self.get_serializer(revenue_streams, many=True)
         return Response(serializer.data)
 

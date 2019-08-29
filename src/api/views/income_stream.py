@@ -47,7 +47,18 @@ class IncomeStreamListAPIView(ListAPIView):
             if period_type == 'past_week' or period_type == 'past_month':
                 targets = income_stream.targets.filter(
                     period__year__contains=kwargs['year'])
-            income_stream = IncomeStreamTransactionsFilter.get_transactions_data(
-                income_stream, period_type, transactions, targets, year)
+            (
+            percentage,
+            transactions_value,
+            total_target,
+            number_of_transactions,
+            g_data
+            ) = IncomeStreamTransactionsFilter.get_transactions_data(
+                period_type, transactions, targets, year)
+            income_stream.transactions_value = transactions_value
+            income_stream.number_of_transactions = number_of_transactions
+            income_stream.total_target = total_target
+            income_stream.achievement_percentage = percentage
+            income_stream.graph_data = g_data
         serializer = self.get_serializer(income_streams, many=True)
         return Response(serializer.data)
