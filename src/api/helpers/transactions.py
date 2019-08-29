@@ -230,7 +230,7 @@ class TransactionsFilterHelper():
         
 class IncomeStreamTransactionsFilter:
 
-    def get_transactions_data(income_stream, period_type, transactions, targets, year):
+    def get_transactions_data(period_type, transactions, targets, year):
         if period_type == 'past_week':
             (
             transactions_value,
@@ -266,9 +266,11 @@ class IncomeStreamTransactionsFilter:
                 transactions, targets, year
             )
         percentage = get_percentage(transactions_value, total_target)
-        income_stream.transactions_value = transactions_value
-        income_stream.number_of_transactions = number_of_transactions
-        income_stream.total_target = total_target
-        income_stream.achievement_percentage = percentage
-        income_stream.graph_data = g_data
-        return income_stream
+        
+        return (
+            percentage,
+            transactions_value,
+            total_target,
+            number_of_transactions,
+            g_data
+            )
