@@ -56,6 +56,16 @@ class IncomeStreamTargetListCreateAPIView(ListCreateAPIView):
             period_type=data.pop('period_type'),
             year=data.pop('period_year')
         )
+        try:
+            target_exists = IncomeStreamTarget.objects.get(
+                metric=metric,
+                period=period,
+            )
+        except:
+            target_exists = None
+        if target_exists:
+            message = 'IncomeStreamTarget already exists'
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
         serializer_context = {
             'request': request,
             'metric': metric,
@@ -99,6 +109,16 @@ class RevenueStreamTargetListCreateAPIView(ListCreateAPIView):
             period_type=data.pop('period_type'),
             year=data.pop('period_year')
         )
+        try:
+            target_exists = RevenueStreamTarget.objects.get(
+                metric=metric,
+                period=period,
+            )
+        except:
+            target_exists = None
+        if target_exists:
+            message = 'RevenueStreamTarget already exists'
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
         serializer_context = {
             'request': request,
             'metric': metric,
@@ -141,6 +161,16 @@ class ProductTargettListCreateAPIView(ListCreateAPIView):
             period_type=data.pop('period_type'),
             year=data.pop('period_year')
         )
+        try:
+            target_exists = ProductTarget.objects.get(
+                metric=metric,
+                period=period,
+            )
+        except:
+            target_exists = None
+        if target_exists:
+            message = 'ProductTarget already exists'
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
         serializer_context = {
             'request': request,
             'metric': metric,
@@ -183,6 +213,16 @@ class ValueCentreTargetListCreateAPIView(ListCreateAPIView):
             period_type=data.pop('period_type'),
             year=data.pop('period_year')
         )
+        try:
+            target_exists = ValueCentreTarget.objects.get(
+                metric=metric,
+                period=period,
+            )
+        except:
+            target_exists = None
+        if target_exists:
+            message = 'ValueCentreTarget already exists'
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
         serializer_context = {
             'request': request,
             'metric': metric,
