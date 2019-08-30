@@ -39,7 +39,14 @@ class ValueCentreListAPIView(ListAPIView):
         for value_centre in value_centres:
             products = value_centre.products.all()
             transactions = []
-            targets = []
+            if period_type == 'past_week' or period_type == 'past_month':
+                    targets = value_centre.targets.filter(
+                        period__year__contains=kwargs['year'])
+            else:
+                targets = value_centre.targets.filter(
+                period__period_type__icontains=period_type,
+                period__year__contains=kwargs['year']
+            )
             for product in products:
                 revenue_streams = product.revenue_streams.all()
                 for revenue_stream in revenue_streams:
@@ -47,15 +54,6 @@ class ValueCentreListAPIView(ListAPIView):
                     income_streams = revenue_stream.income_streams.all()
                     for income_stream in income_streams:
                         transactions += income_stream.transactions.all()
-                        # TODO , CALCULATE TARGETS AT VALUE CENTRE LEVEL
-                        if period_type == 'past_week' or period_type == 'past_month':
-                            targets += income_stream.targets.filter(
-                                period__year__contains=kwargs['year'])
-                        else:
-                            targets += income_stream.targets.filter(
-                            period__period_type__icontains=period_type,
-                            period__year__contains=kwargs['year']
-                        )
             (
             percentage,
             transactions_value,
