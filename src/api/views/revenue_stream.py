@@ -12,7 +12,8 @@ from rest_framework import status
 from src.api.serializers.revenue_stream import RevenueStreamSerializer
 from src.api.models import (
     RevenueStream,
-    Product
+    Product,
+    Transaction
 )
 from src.api.helpers.transactions import (
     get_transactions,
@@ -37,7 +38,9 @@ class RevenueStreamListAPIView(ListAPIView):
         period_type = kwargs['period_type'].lower()
         year = int(kwargs['year'])
         for revenue_stream in revenue_streams:
-            transactions = []
+            transactions = Transaction.objects.filter(
+                income_stream__revenue_stream=revenue_stream
+            ).values('amount', 'date_paid')
             get_transactions(revenue_stream)
             income_streams = revenue_stream.income_streams.all()
             if period_type == 'past_week' or period_type == 'past_month':
@@ -47,9 +50,7 @@ class RevenueStreamListAPIView(ListAPIView):
                 targets = revenue_stream.targets.filter(
                 period__period_type__icontains=period_type,
                 period__year__contains=kwargs['year']
-            )
-            for income_stream in income_streams:
-                transactions += income_stream.transactions.all()
+                )
             (
             percentage,
             transactions_value,

@@ -9,7 +9,8 @@ from rest_framework import status
 from src.api.serializers.product import ProductSerializer
 from src.api.models import (
     ValueCentre,
-    Product
+    Product,
+    Transaction
 )
 from src.api.helpers.transactions import (
     get_transactions,
@@ -33,7 +34,9 @@ class ProductListAPIView(ListAPIView):
         period_type = kwargs['period_type'].lower()
         year = int(kwargs['year'])
         for product in products:
-            transactions = []
+            transactions = Transaction.objects.filter(
+                income_stream__revenue_stream__product=product
+            ).values('amount', 'date_paid')
             revenue_streams = product.revenue_streams.all()
             if period_type == 'past_week' or period_type == 'past_month':
                     targets = product.targets.filter(
@@ -42,12 +45,7 @@ class ProductListAPIView(ListAPIView):
                 targets = product.targets.filter(
                 period__period_type__icontains=period_type,
                 period__year__contains=kwargs['year']
-            )
-            for revenue_stream in revenue_streams:
-                get_transactions(revenue_stream)
-                income_streams = revenue_stream.income_streams.all()
-                for income_stream in income_streams:
-                    transactions += income_stream.transactions.all()
+                )
             (
             percentage,
             transactions_value,

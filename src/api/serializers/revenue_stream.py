@@ -19,5 +19,5 @@ class RevenueStreamSerializer(serializers.ModelSerializer):
         """ Meta options"""
         
         model = RevenueStream
-        fields = ['id', 'name', 'number_of_transactions', 'total_target',
+        fields = ['id', 'name', 'color', 'number_of_transactions', 'total_target',
             'achievement_percentage', 'transactions_value', 'graph_data']

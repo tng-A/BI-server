@@ -16,7 +16,8 @@ from src.api.helpers.transactions import (
 from src.api.helpers.percentage import get_percentage
 from src.api.models import (
     IncomeStream,
-    RevenueStream
+    RevenueStream,
+    Transaction
 )
 
 
@@ -39,7 +40,9 @@ class IncomeStreamListAPIView(ListAPIView):
         period_type = kwargs['period_type'].lower()
         year = int(kwargs['year'])
         for income_stream in income_streams:
-            transactions = income_stream.transactions.all()
+            transactions = Transaction.objects.filter(
+                income_stream=income_stream
+            ).values('amount', 'date_paid')
             targets = income_stream.targets.filter(
                 period__period_type__icontains=period_type,
                 period__year__contains=kwargs['year']

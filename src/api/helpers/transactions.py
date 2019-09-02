@@ -207,10 +207,10 @@ class TransactionsFilterHelper():
             current_month = months.index(month) + 1
             value = 0
             for t in transactions:
-                transaction_month = int(t.date_paid[5:7])
+                transaction_month = int(t['date_paid'][5:7])
                 if current_month == transaction_month:
-                    value += t.amount
-                    transactions_value += t.amount
+                    value += t['amount']
+                    transactions_value += t['amount']
                     number_of_transactions += 1
             g_data_obj = {
                 "value": round(value, 2),
