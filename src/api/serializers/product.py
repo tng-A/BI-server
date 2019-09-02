@@ -24,5 +24,5 @@ class ProductSerializer(serializers.ModelSerializer):
         """ Meta options"""
         
         model = Product
-        fields = ['id', 'name', 'value_centre', 'number_of_transactions', 'total_target',
+        fields = ['id', 'name', 'value_centre', 'color', 'number_of_transactions', 'total_target',
             'achievement_percentage', 'transactions_value', 'graph_data']

@@ -12,7 +12,8 @@ from rest_framework import status
 from src.api.serializers.value_centre import ValueCentreSerializer
 from src.api.models import (
     ValueCentre,
-    Company
+    Company,
+    Transaction
 )
 from src.api.helpers.transactions import (
     get_transactions,
@@ -37,29 +38,24 @@ class ValueCentreListAPIView(ListAPIView):
         period_type = kwargs['period_type'].lower()
         year = int(kwargs['year'])
         for value_centre in value_centres:
-            products = value_centre.products.all()
-            transactions = []
+            transactions = Transaction.objects.filter(
+                income_stream__revenue_stream__product__value_centre=value_centre
+            ).values('amount', 'date_paid')
             if period_type == 'past_week' or period_type == 'past_month':
-                    targets = value_centre.targets.filter(
-                        period__year__contains=kwargs['year'])
+                targets = value_centre.targets.filter(
+                    period__year__contains=kwargs['year'])
             else:
                 targets = value_centre.targets.filter(
-                period__period_type__icontains=period_type,
-                period__year__contains=kwargs['year']
-            )
-            for product in products:
-                revenue_streams = product.revenue_streams.all()
-                for revenue_stream in revenue_streams:
-                    get_transactions(revenue_stream)
-                    income_streams = revenue_stream.income_streams.all()
-                    for income_stream in income_streams:
-                        transactions += income_stream.transactions.all()
+                    period__period_type__icontains=period_type,
+                    period__year__contains=kwargs['year']
+                )
+
             (
-            percentage,
-            transactions_value,
-            total_target,
-            number_of_transactions,
-            g_data
+                percentage,
+                transactions_value,
+                total_target,
+                number_of_transactions,
+                g_data
             ) = IncomeStreamTransactionsFilter.get_transactions_data(
                 period_type, transactions, targets, year)
             value_centre.transactions_value = transactions_value
@@ -77,7 +73,7 @@ class ValueCentreCreateAPIView(CreateAPIView):
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = ValueCentreSerializer
     queryset = ValueCentre.objects.all()
-    
+
     def create(self, request, *args, **kwargs):
         try:
             company = Company.objects.get(pk=kwargs['company_id'])
