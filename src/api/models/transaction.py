@@ -5,21 +5,19 @@ from django.db import models
 from .base import CommonFieldsMixin
 from .revenue_stream import RevenueStream
 from .channel import Channel
+from .income_stream import IncomeStream
 
 
 class Transaction(CommonFieldsMixin):
-    transaction_id = models.UUIDField(unique=True)
+    """ Transaction model"""
+    date_paid = models.CharField(max_length=255)
+    receipt_number = models.CharField(max_length=255, unique=True)
     amount = models.FloatField()
-    revenue_stream = models.ForeignKey(
-        RevenueStream,
-        on_delete=models.PROTECT,
-        related_name='transactions'
-    )
-    channel = models.ForeignKey(
-        Channel,
-        on_delete=models.PROTECT,
+    income_stream = models.ForeignKey(
+        IncomeStream,
+        on_delete=models.CASCADE,
         related_name='transactions'
     )
 
     def __str__(self):
-        return '{}'.format(self.transaction_id)
+        return '{}'.format(self.income_stream.name)

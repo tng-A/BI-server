@@ -14,10 +14,7 @@ from .period import Period
 
 class ObjectiveMixin(CommonFieldsMixin):
     amount = models.IntegerField(null=False, blank=False)
-    name = models.CharField(max_length=50, default='test')
-
-    def __str__(self):
-        return self.name
+    description = models.CharField(max_length=255, null=True, blank=True)
         
     class Meta:
         abstract = True
@@ -36,13 +33,16 @@ class ValueCentreTarget(ObjectiveMixin):
         on_delete=models.PROTECT,
         null=False,
         blank=False,
-        related_name='value_centre_metrics'
+        related_name='value_centres'
     )
     period = models.ForeignKey(
         Period,
         on_delete=models.PROTECT,
-        related_name='value_centre_periods'
+        related_name='value_centres'
     )
+
+    def __str__(self):
+        return '{} {}'.format(self.period.name, self.period.year)
 
 
 class ProductTarget(ObjectiveMixin):
@@ -58,13 +58,16 @@ class ProductTarget(ObjectiveMixin):
         on_delete=models.PROTECT,
         null=False,
         blank=False,
-        related_name='product_targets'
+        related_name='products'
     )
     period = models.ForeignKey(
         Period,
         on_delete=models.PROTECT,
-        related_name='product_periods'
+        related_name='products'
     )
+
+    def __str__(self):
+        return '{} {}'.format(self.period.name, self.period.year)
     
 
 
@@ -81,13 +84,16 @@ class RevenueStreamTarget(ObjectiveMixin):
         on_delete=models.PROTECT,
         null=False,
         blank=False,
-        related_name='revenue_stream_targets'
+        related_name='revenue_streams'
     )
     period = models.ForeignKey(
         Period,
         on_delete=models.PROTECT,
-        related_name='revenue_stream_periods'
+        related_name='revenue_streams'
     )
+
+    def __str__(self):
+        return '{} {}'.format(self.period.name, self.period.year)
 
 
 class IncomeStreamTarget(ObjectiveMixin):
@@ -103,10 +109,13 @@ class IncomeStreamTarget(ObjectiveMixin):
         on_delete=models.PROTECT,
         null=False,
         blank=False,
-        related_name='income_stream_targets'
+        related_name='income_streams'
     )
     period = models.ForeignKey(
         Period,
         on_delete=models.PROTECT,
-        related_name='income_stream_periods'
+        related_name='income_streams'
     )
+
+    def __str__(self):
+        return '{} {}'.format(self.period.name, self.period.year)

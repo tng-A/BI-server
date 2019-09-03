@@ -7,5 +7,5 @@ from src.api.models import Period
 class PeriodSerializer(serializers.ModelSerializer):
 
     class Meta:
-
-        fields = ['name', 'start', 'end', 'period']
+        model = Period
+        fields = ['name', 'year', 'period_type']

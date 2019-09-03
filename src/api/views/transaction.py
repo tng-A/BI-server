@@ -8,6 +8,7 @@ from rest_framework import status
 
 from src.api.serializers.transaction import TransactionSerializer
 from src.api.serializers.revenue_stream import RevenueStreamSerializer
+from src.api.helpers.transactions import get_transactions
 from src.api.models import (
     Transaction,
     Company,
@@ -53,6 +54,7 @@ class TransactionListCreateAPIView(ListCreateAPIView):
         except RevenueStream.DoesNotExist:
             message = 'RevenueStream does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
+        get_transactions(revenue_stream)
         transactions = revenue_stream.transactions.all()
         serializer = self.get_serializer(transactions, many=True)
         return Response(serializer.data) 
