@@ -15,10 +15,7 @@ from src.api.models import (
     Company,
     Transaction
 )
-from src.api.helpers.transactions import (
-    get_transactions,
-    IncomeStreamTransactionsFilter
-)
+from src.api.helpers.transactions import IncomeStreamTransactionsFilter
 
 
 class ValueCentreListAPIView(ListAPIView):

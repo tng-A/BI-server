@@ -6,7 +6,11 @@ import math
 from dateutil.relativedelta import relativedelta
 from django.shortcuts import get_object_or_404
 
-from src.api.models import Transaction, IncomeStream
+from src.api.models import (
+    Transaction,
+    IncomeStream,
+    RevenueStream
+)
 from src.api.helpers.percentage import get_percentage
 
 
@@ -14,31 +18,37 @@ transactions_url = os.getenv('TRANSACTONS_URL')
 cred = os.getenv('CRED')
 
 
-def get_transactions(revenue_stream):
-    """Get transactions from a third party api and populate our db"""
+def _get_transactions_json(revenue_stream):
+    """ Get all transactions in json"""
     format_transaction_url = transactions_url.format(revenue_stream.name.lower())
     try:
         response = requests.get(format_transaction_url,auth=(cred, cred)).json()['results']
     except Exception as err:
         print(err)
-        return
-    for res in response:
-        for item in res['results']:
-            transactions = item['items']
-            income_stream, _ = IncomeStream.objects.get_or_create(
-                name=item['revenue_stream'] or 'Noname',
-                revenue_stream=revenue_stream)
-            for transaction in transactions:
-                try:
-                    Transaction.objects.create(
-                    date_paid=transaction['date_paid'],
-                    receipt_number=transaction['receipt_number'],
-                    amount=transaction['amount_paid'],
-                    income_stream=income_stream
-                    )
-                except:
-                    continue
-    return
+        pass
+    return response
+
+def transactions_update():
+    """ Update transactions table"""
+    revenue_streams = RevenueStream.objects.all()
+    for revenue_stream in revenue_streams:
+        response = _get_transactions_json(revenue_stream)
+        for res in response:
+            for item in res['results']:
+                transactions = item['items']
+                income_stream, _ = IncomeStream.objects.get_or_create(
+                    name=item['revenue_stream'] or 'Noname',
+                    revenue_stream=revenue_stream)
+                for transaction in transactions:
+                    try:
+                        Transaction.objects.create(
+                        date_paid=transaction['date_paid'],
+                        receipt_number=transaction['receipt_number'],
+                        amount=transaction['amount_paid'],
+                        income_stream=income_stream
+                        )
+                    except:
+                        pass
 
 def get_all_months_and_quotas():
     """ Get all months in an year helper"""
