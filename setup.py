@@ -25,6 +25,7 @@ setup(
         "whitenoise==4.1.3",
         "python-dateutil==2.8.0",
         "requests==2.22.0",
-        "apscheduler==3.6.1"
+        "apscheduler==3.6.1",
+        "django-cors-headers==3.1.0"
     ]
 )
