@@ -15,10 +15,7 @@ from src.api.models import (
     Product,
     Transaction
 )
-from src.api.helpers.transactions import (
-    get_transactions,
-    IncomeStreamTransactionsFilter
-)
+from src.api.helpers.transactions import IncomeStreamTransactionsFilter
 
 
 class RevenueStreamListAPIView(ListAPIView):
@@ -41,8 +38,6 @@ class RevenueStreamListAPIView(ListAPIView):
             transactions = Transaction.objects.filter(
                 income_stream__revenue_stream=revenue_stream
             ).values('amount', 'date_paid')
-            get_transactions(revenue_stream)
-            income_streams = revenue_stream.income_streams.all()
             if period_type == 'past_week' or period_type == 'past_month':
                     targets = revenue_stream.targets.filter(
                         period__year__contains=kwargs['year'])

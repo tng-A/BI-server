@@ -9,10 +9,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from src.api.serializers.income_stream import IncomeStreamSerializer
-from src.api.helpers.transactions import (
-    get_transactions,
-    IncomeStreamTransactionsFilter
-)
+from src.api.helpers.transactions import IncomeStreamTransactionsFilter
 from src.api.helpers.percentage import get_percentage
 from src.api.models import (
     IncomeStream,
@@ -35,7 +32,6 @@ class IncomeStreamListAPIView(ListAPIView):
         except RevenueStream.DoesNotExist:
             message = 'RevenueStream does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
-        get_transactions(revenue_stream)
         income_streams = revenue_stream.income_streams.all()
         period_type = kwargs['period_type'].lower()
         year = int(kwargs['year'])
