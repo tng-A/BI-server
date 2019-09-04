@@ -25,30 +25,33 @@ def _get_transactions_json(revenue_stream):
         response = requests.get(format_transaction_url,auth=(cred, cred)).json()['results']
     except Exception as err:
         print(err)
-        pass
-    return response
+        response = []
+    for res in response:
+        for item in res['results']:
+            transactions = item['items']
+            income_stream, _ = IncomeStream.objects.get_or_create(
+                name=item['revenue_stream'] or 'Noname',
+                revenue_stream=revenue_stream)
+            for transaction in transactions:
+                try:
+                    Transaction.objects.create(
+                    date_paid=transaction['date_paid'],
+                    receipt_number=transaction['receipt_number'],
+                    amount=transaction['amount_paid'],
+                    income_stream=income_stream
+                    )
+                except:
+                    pass
+    return
+    
 
 def transactions_update():
     """ Update transactions table"""
     revenue_streams = RevenueStream.objects.all()
-    for revenue_stream in revenue_streams:
-        response = _get_transactions_json(revenue_stream)
-        for res in response:
-            for item in res['results']:
-                transactions = item['items']
-                income_stream, _ = IncomeStream.objects.get_or_create(
-                    name=item['revenue_stream'] or 'Noname',
-                    revenue_stream=revenue_stream)
-                for transaction in transactions:
-                    try:
-                        Transaction.objects.create(
-                        date_paid=transaction['date_paid'],
-                        receipt_number=transaction['receipt_number'],
-                        amount=transaction['amount_paid'],
-                        income_stream=income_stream
-                        )
-                    except:
-                        pass
+    for index in range(len(revenue_streams)):
+        _get_transactions_json(revenue_streams[index])
+    return
+        
 
 def get_all_months_and_quotas():
     """ Get all months in an year helper"""
