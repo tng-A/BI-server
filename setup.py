@@ -23,6 +23,8 @@ setup(
         "django-cors-middleware==1.4.0",
         "django-grappelli==2.13.1",
         "whitenoise==4.1.3",
-        "python-dateutil==2.8.0"
+        "python-dateutil==2.8.0",
+        "requests==2.22.0",
+        "apscheduler==3.6.1"
     ]
 )

@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_swagger',
 
-    'src.api'
+    'src.api.apps.ApiConfig'
 ]
 
 MIDDLEWARE = [
