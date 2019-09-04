@@ -6,5 +6,5 @@ from src.api.helpers.transactions import transactions_update
 
 def start():
     scheduler = BackgroundScheduler()
-    scheduler.add_job(transactions_update, 'interval', minutes=2)
+    scheduler.add_job(transactions_update, 'interval', minutes=10)
     scheduler.start()
