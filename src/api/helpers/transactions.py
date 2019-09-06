@@ -111,11 +111,11 @@ class TransactionsFilterHelper():
             value = 0
             day_date = start_date.strftime('%Y-%m-%d')[5:10]
             for t in transactions:
-                transaction_date = t.date_paid[5:10]
+                transaction_date = t['date_paid'][5:7]
                 if transaction_date == day_date:
-                    transactions_value += t.amount
+                    transactions_value += t['amount']
                     number_of_transactions += 1
-                    value += t.amount
+                    value += t['amount']
             num_of_days = num_of_days - 1
             g_data_obj = {
                 "value": round(value, 2),
@@ -145,11 +145,11 @@ class TransactionsFilterHelper():
             format_week_end = prev_week_end.strftime('%Y-%m-%d')
             current_week_end = (prev_week_end + datetime.timedelta(7)).strftime('%Y-%m-%d')
             for t in transactions:
-                transaction_date = t.date_paid[:9]
+                transaction_date = t['date_paid'][5:7]
                 if transaction_date > format_week_end and transaction_date <= current_week_end:
-                    transactions_value += t.amount
+                    transactions_value += t['amount']
                     number_of_transactions += 1
-                    value += t.amount
+                    value += t['amount']
             g_data_obj = {
                 "value": round(value, 2),
                 "label": week
@@ -186,12 +186,12 @@ class TransactionsFilterHelper():
             prev_month = current_m2
             value = 0
             for t in transactions:
-                transaction_month = int(t.date_paid[5:7])
+                transaction_month = int(t['date_paid'][5:7])
                 if current_m == transaction_month \
                     or current_m1 == transaction_month \
                         or current_m2 == transaction_month:
-                    value += t.amount
-                    transactions_value += t.amount
+                    value += t['amount']
+                    transactions_value += t['amount']
                     number_of_transactions += 1
             g_data_obj = {
                 "value": round(value, 2),
