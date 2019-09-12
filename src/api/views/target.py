@@ -110,7 +110,7 @@ class RevenueStreamTargetListCreateAPIView(ListCreateAPIView):
             year=data.pop('period_year')
         )
         try:
-            target_exists = RevenueStreamTarget.objects.get(
+            target_exists = revenue_stream.targets.get(
                 metric=metric,
                 period=period,
             )
@@ -162,7 +162,7 @@ class ProductTargettListCreateAPIView(ListCreateAPIView):
             year=data.pop('period_year')
         )
         try:
-            target_exists = ProductTarget.objects.get(
+            target_exists = product.targets.get(
                 metric=metric,
                 period=period,
             )
@@ -214,7 +214,7 @@ class ValueCentreTargetListCreateAPIView(ListCreateAPIView):
             year=data.pop('period_year')
         )
         try:
-            target_exists = ValueCentreTarget.objects.get(
+            target_exists = value_centre.targets.get(
                 metric=metric,
                 period=period,
             )
