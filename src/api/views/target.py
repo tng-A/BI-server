@@ -57,7 +57,7 @@ class IncomeStreamTargetListCreateAPIView(ListCreateAPIView):
             year=data.pop('period_year')
         )
         try:
-            target_exists = IncomeStreamTarget.objects.get(
+            target_exists = income_stream.targets.get(
                 metric=metric,
                 period=period,
             )
