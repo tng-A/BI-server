@@ -22,19 +22,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = config('SECRET_KEY', 'dhdhhdhdhdhdh')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    '127.0.0.1',
-    'localhost:3000',
-    'localhost:8000',
-    'localhost',
-    '.herokuapp.com'
-]
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -98,12 +92,25 @@ WSGI_APPLICATION = 'biserver.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    # Will load database url from DATABASE_URL environment variable
-    # postgres://USER:PASSWORD@HOST:PORT/NAME
-
-    'default': dj_database_url.config()
-}
+if os.getenv('DATABASE_URL'):
+    DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DATABASE_URL')
+        }
+    }
+    DATABASES['default'] = dj_database_url.config()
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv("DB_NAME"),
+            'USER': os.getenv("DB_USER"),
+            'PASSWORD': os.getenv("DB_PASS"),
+            'HOST': os.getenv("DB_HOST"),
+            'PORT': os.getenv("DB_PORT", '5432'),
+        }
+    }
 
 
 # Password validation
