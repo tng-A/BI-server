@@ -5,7 +5,6 @@ from rest_framework.generics import (
     ListAPIView,
     ListCreateAPIView
 )
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -23,7 +22,6 @@ from src.api.helpers.transactions import IncomeStreamTransactionsFilter
 
 class ValueCentreListAPIView(ListAPIView):
     """ List value centres and their transactions data"""
-    permission_classes =(IsAuthenticated,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = ValueCentreSerializer
     queryset = ValueCentre.objects.all()
@@ -68,7 +66,6 @@ class ValueCentreListAPIView(ListAPIView):
 
 
 class ValueCentreListCreateAPIView(ListCreateAPIView):
-    permission_classes =(IsAuthenticated,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = ValueCentreMinimalSerializer
     queryset = ValueCentre.objects.all()

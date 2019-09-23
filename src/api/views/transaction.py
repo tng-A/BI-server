@@ -2,7 +2,6 @@
 
 from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.generics import ListCreateAPIView, ListAPIView
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -18,7 +17,6 @@ from src.api.models import (
 
 class ProductTransactionsList(ListAPIView):
     """ List all transactions in a given product"""
-    permission_classes =(IsAuthenticated,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = TransactionSerializer
     queryset = Transaction.objects.all()
@@ -41,7 +39,6 @@ class ProductTransactionsList(ListAPIView):
 
 class TransactionListCreateAPIView(ListCreateAPIView):
     """ List/Create all transaction(s) in a given revenue stream """
-    permission_classes =(IsAuthenticated,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = TransactionSerializer
     queryset = Transaction.objects.all()
@@ -81,7 +78,6 @@ class TransactionListCreateAPIView(ListCreateAPIView):
 
 class CompanyRevenueStreams(ListAPIView):
     """ Get all the revenue_streams in a given company"""
-    permission_classes =(IsAuthenticated,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = RevenueStreamSerializer
     queryset = RevenueStream.objects.all()

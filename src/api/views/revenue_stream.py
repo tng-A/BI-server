@@ -5,7 +5,6 @@ from rest_framework.generics import (
     ListAPIView,
     CreateAPIView
 )
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -20,7 +19,6 @@ from src.api.helpers.transactions import IncomeStreamTransactionsFilter
 
 class RevenueStreamListAPIView(ListAPIView):
     """ List revenue streams and transactions data"""
-    permission_classes =(IsAuthenticated,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = RevenueStreamSerializer
     queryset = RevenueStream.objects.all()
@@ -66,7 +64,6 @@ class RevenueStreamListAPIView(ListAPIView):
 
 class RevenueStreamCreateAPIView(CreateAPIView):
     """ Create a revenue stream"""
-    permission_classes =(IsAuthenticated,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = RevenueStreamSerializer
     queryset = RevenueStream.objects.all()

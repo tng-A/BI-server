@@ -20,7 +20,21 @@ class RegistrationSerializer(serializers.ModelSerializer):
             error_messages['null'] = error_messages['blank'] \
                 = error_messages['required'] \
                 = 'Please supply your {}.'.format(field)
-
+    username = serializers.RegexField(
+        regex='^[A-Za-z\-\_]+\d*$',
+        min_length=3,
+        max_length=20,
+        required=True,
+        validators=[UniqueValidator(
+            queryset=User.objects.all(),
+            message='The username already exists. Kindly try another.'
+        )],
+        error_messages={
+            'min_length': 'Username allows a minimum of 3 characters.',
+            'max_length': 'Username allows a maximum of 20 characters.',
+            'invalid': 'Username should contain alphanumeric characters.'
+        }
+    )
     email = serializers.EmailField(
         validators=[UniqueValidator(
             queryset=User.objects.all(),
@@ -31,7 +45,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
             'invalid': 'Please enter a valid email address.'
         }
     )
-
     password = serializers.RegexField(
         regex=r'^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\!\@#\$%\^&]).*',
         max_length=128,
@@ -47,13 +60,12 @@ class RegistrationSerializer(serializers.ModelSerializer):
     company = serializers.CharField(max_length=50)
 
     def get_token(self, obj):
-        obj.company_id = obj.company.id
         token = get_jwt_token(obj)
         return token
 
     class Meta:
         model = User
-        fields = ['email', 'token', 'password', 'company']
+        fields = ['email', 'token', 'password', 'company', 'username']
 
     def create(self, validated_data):
         company_name = validated_data.pop('company')
@@ -83,6 +95,5 @@ class LoginSerializer(serializers.Serializer):
         user = authenticate(email=email, password=password)
         if not user:
             raise serializers.ValidationError('Wrong email or password.')
-        payload = User.objects.get(email=email)
-        data['token'] = get_jwt_token(payload)
+        data['token'] = get_jwt_token(user)
         return data

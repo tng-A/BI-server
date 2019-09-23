@@ -35,7 +35,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'grappelli',
+    'jet_django',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -137,6 +137,9 @@ AUTH_PASSWORD_VALIDATORS = [
 WSGI_APPLICATION = 'biserver.wsgi.application'
 
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
@@ -153,19 +156,16 @@ REST_FRAMEWORK = {
 JWT_AUTH = {
     'JWT_ENCODE_HANDLER':
     'rest_framework_jwt.utils.jwt_encode_handler',
-
     'JWT_DECODE_HANDLER':
     'rest_framework_jwt.utils.jwt_decode_handler',
-
+    'JWT_PAYLOAD_GET_USERNAME_HANDLER':
+    'src.api.helpers.jwt.jwt_get_username_from_payload_handler',
     'JWT_PAYLOAD_HANDLER':
     'src.api.helpers.jwt.jwt_payload_handler',
-
     'JWT_PAYLOAD_GET_USER_ID_HANDLER':
     'rest_framework_jwt.utils.jwt_get_user_id_from_payload_handler',
-
     'JWT_RESPONSE_PAYLOAD_HANDLER':
     'rest_framework_jwt.utils.jwt_response_payload_handler',
-
     'JWT_SECRET_KEY': SECRET_KEY,
     'JWT_GET_USER_SECRET_KEY': None,
     'JWT_PUBLIC_KEY': None,
