@@ -4,7 +4,6 @@ from django.db import models
 
 from .base import CommonFieldsMixin
 from .revenue_stream import RevenueStream
-from .channel import Channel
 from .income_stream import IncomeStream
 
 

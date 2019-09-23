@@ -9,13 +9,6 @@ from .target import (
     RevenueStreamTarget
 )
 from .metric import Metric
-from .okr import (
-    ValueCentreOKR,
-    ProductOKR,
-    IncomeStreamOKR,
-    RevenueStreamOKR
-)
 from .revenue_stream import RevenueStream
 from .period import Period
 from .transaction import Transaction
-from .channel import Channel
