@@ -3,19 +3,29 @@ from django.db.models import Sum
 from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.generics import (
     ListAPIView,
-    CreateAPIView
+    ListCreateAPIView
 )
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 
-from src.api.serializers.value_centre import ValueCentreSerializer
+from src.api.serializers.value_centre import (
+    ValueCentreSerializer,
+    ValueCentreMinimalSerializer
+)
 from src.api.models import (
     ValueCentre,
     Company,
     Transaction
 )
 from src.api.helpers.transactions import IncomeStreamTransactionsFilter
+
+
+class GetValuecentreNames(ListAPIView):
+    permission_classes = (AllowAny, )
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
+    serializer_class = ValueCentreMinimalSerializer
+    queryset = ValueCentre.objects.all()
 
 
 class ValueCentreListAPIView(ListAPIView):
@@ -64,14 +74,14 @@ class ValueCentreListAPIView(ListAPIView):
         return Response(serializer.data)
 
 
-class ValueCentreCreateAPIView(CreateAPIView):
-    """ Create value centre"""
+class ValueCentreListCreateAPIView(ListCreateAPIView):
     permission_classes = (AllowAny,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
-    serializer_class = ValueCentreSerializer
+    serializer_class = ValueCentreMinimalSerializer
     queryset = ValueCentre.objects.all()
 
     def create(self, request, *args, **kwargs):
+        """ Create value centre"""
         try:
             company = Company.objects.get(pk=kwargs['company_id'])
         except Company.DoesNotExist:

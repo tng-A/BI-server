@@ -24,3 +24,14 @@ class ValueCentreSerializer(serializers.ModelSerializer):
         fields = [ 'id', 'name', 'color', 'company',
             'number_of_transactions', 'total_target',
             'achievement_percentage', 'transactions_value', 'graph_data',]
+
+
+class ValueCentreMinimalSerializer(serializers.ModelSerializer):
+    """ ValueCentre model serializer"""
+
+    class Meta:
+        """ Meta options"""
+        
+        model = ValueCentre
+        fields = ['id', 'name', 'description', 'color']
+

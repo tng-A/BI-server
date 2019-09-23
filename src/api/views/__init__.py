@@ -2,7 +2,7 @@ from .company import CompanyListCreateAPIView
 from .channel import ChannelListCreateAPIView
 from .value_centre import (
     ValueCentreListAPIView,
-    ValueCentreCreateAPIView
+    ValueCentreListCreateAPIView
 )
 from .product import (
     ProductListAPIView,
