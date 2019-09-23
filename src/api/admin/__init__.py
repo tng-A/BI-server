@@ -16,7 +16,6 @@ def add_initial_super_admin(sender, **kwargs):
     if User.objects.count() == 0:
         print('Creating a superAdmin')
         User.objects.create_superuser(
-            username=os.getenv('SUPER_NAME'),
             email=os.getenv('SUPER_EMAIL'),
             password=os.getenv('SUPER_PASS')
         )

@@ -1,9 +1,11 @@
-from django.urls import path
+from django.urls import path, include
 from .views import *
 
 from .views.metric import MetricListCreateAPIView
 
 urlpatterns = [
+    path('register/', RegistrationAPIView.as_view(), name='register'),
+    path('login/', LoginGenericAPIView.as_view(), name='login'),
     path('company/', CompanyListCreateAPIView.as_view(), name='company'),
     path('period/', PeriodListAPIView.as_view(), name='period'),
     path('nav/<int:company_id>/', NavItems.as_view(), name='nav'),
@@ -57,4 +59,5 @@ urlpatterns = [
         RevenueStreamTargetListCreateAPIView.as_view(),
         name='revenue_stream_target'
         ),
+    path('login', include('rest_framework.urls')),    
 ]

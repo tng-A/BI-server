@@ -12,3 +12,4 @@ from .metric import Metric
 from .revenue_stream import RevenueStream
 from .period import Period
 from .transaction import Transaction
+from .user import User

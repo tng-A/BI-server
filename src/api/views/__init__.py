@@ -25,3 +25,7 @@ from src.api.views.transaction import(
     ProductTransactionsList
 )
 from src.api.views.nav import NavItems
+from .user import (
+    RegistrationAPIView,
+    LoginGenericAPIView
+)

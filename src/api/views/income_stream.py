@@ -4,7 +4,7 @@ import datetime
 
 from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.generics import ListAPIView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -21,7 +21,7 @@ from src.api.models import (
 class IncomeStreamListAPIView(ListAPIView):
     """ Get all incomestreams (eg Parking) in a
         revenue stream(eg Embu) and transactions info."""
-    permission_classes = (AllowAny,)
+    permission_classes =(IsAuthenticated,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = IncomeStreamSerializer
     queryset = IncomeStream.objects.all()

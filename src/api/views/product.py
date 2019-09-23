@@ -2,7 +2,7 @@
 
 from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.generics import ListAPIView, CreateAPIView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -17,7 +17,7 @@ from src.api.helpers.transactions import IncomeStreamTransactionsFilter
 
 class ProductListAPIView(ListAPIView):
     """ List products and transactions data"""
-    permission_classes = (AllowAny,)
+    permission_classes =(IsAuthenticated,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
@@ -63,7 +63,7 @@ class ProductListAPIView(ListAPIView):
 
 class ProductCreateAPIView(CreateAPIView):
     """ Create product"""
-    permission_classes = (AllowAny,)
+    permission_classes =(IsAuthenticated,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = ProductSerializer
     queryset = Product.objects.all()

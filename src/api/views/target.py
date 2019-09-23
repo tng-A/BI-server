@@ -2,7 +2,7 @@
 
 from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.generics import ListCreateAPIView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -27,7 +27,7 @@ from src.api.models import (
 
 
 class IncomeStreamTargetListCreateAPIView(ListCreateAPIView):
-    permission_classes = (AllowAny,)
+    permission_classes =(IsAuthenticated,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = IncomeStreamTargetSerializer
     queryset = IncomeStreamTarget.objects.all()
@@ -80,7 +80,7 @@ class IncomeStreamTargetListCreateAPIView(ListCreateAPIView):
 
 
 class RevenueStreamTargetListCreateAPIView(ListCreateAPIView):
-    permission_classes = (AllowAny,)
+    permission_classes =(IsAuthenticated,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = RevenueStreamTargetSerializer
     queryset = RevenueStreamTarget.objects.all()
@@ -133,7 +133,7 @@ class RevenueStreamTargetListCreateAPIView(ListCreateAPIView):
 
 
 class ProductTargettListCreateAPIView(ListCreateAPIView):
-    permission_classes = (AllowAny,)
+    permission_classes =(IsAuthenticated,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = ProductTargetSerializer
     queryset = ProductTarget.objects.all()
@@ -185,7 +185,7 @@ class ProductTargettListCreateAPIView(ListCreateAPIView):
 
 
 class ValueCentreTargetListCreateAPIView(ListCreateAPIView):
-    permission_classes = (AllowAny,)
+    permission_classes =(IsAuthenticated,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = ValueCentreTargetSerializer
     queryset = ValueCentreTarget.objects.all()

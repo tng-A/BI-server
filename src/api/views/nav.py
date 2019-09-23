@@ -2,15 +2,15 @@
 
 from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.generics import ListAPIView
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
 from src.api.models import ValueCentre, Company, Product, RevenueStream, IncomeStream
 from src.api.serializers.nav import NavSerializer
 
 class NavItems(ListAPIView):
-    permission_classes = (AllowAny, )
+    permission_classes =(IsAuthenticated,)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = NavSerializer
     queryset = ValueCentre.objects.all()
