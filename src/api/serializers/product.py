@@ -6,6 +6,7 @@ from src.api.models.product import Product
 from src.api.serializers.income_stream import GraphDataSerializer
 
 
+
 class ProductSerializer(serializers.ModelSerializer):
     """ Product model serializer"""
 

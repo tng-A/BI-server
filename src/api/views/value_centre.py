@@ -21,13 +21,6 @@ from src.api.models import (
 from src.api.helpers.transactions import IncomeStreamTransactionsFilter
 
 
-class GetValuecentreNames(ListAPIView):
-    permission_classes = (AllowAny, )
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
-    serializer_class = ValueCentreMinimalSerializer
-    queryset = ValueCentre.objects.all()
-
-
 class ValueCentreListAPIView(ListAPIView):
     """ List value centres and their transactions data"""
     permission_classes = (AllowAny,)

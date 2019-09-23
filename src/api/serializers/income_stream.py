@@ -4,7 +4,6 @@ from rest_framework import serializers
 
 from src.api.models.income_stream import IncomeStream
 
-
 class GraphDataSerializer(serializers.Serializer):
     """
     Serializer for the graph data object to help with
@@ -33,3 +32,4 @@ class IncomeStreamSerializer(serializers.ModelSerializer):
         model = IncomeStream
         fields = ['id', 'name', 'number_of_transactions', 'total_target',
                     'achievement_percentage', 'transactions_value', 'graph_data', 'color']
+
