@@ -12,7 +12,6 @@ from src.api.models import (
     Transaction,
     Company,
     RevenueStream,
-    Channel,
     Product
 )
 

@@ -2,10 +2,6 @@ from django.urls import path
 from .views import *
 
 from .views.metric import MetricListCreateAPIView
-from .analytics import (
-    IncomeStreamTrends,
-    IncomeStreamCard
-)
 
 urlpatterns = [
     path('company/', CompanyListCreateAPIView.as_view(), name='company'),
@@ -60,40 +56,4 @@ urlpatterns = [
         RevenueStreamTargetListCreateAPIView.as_view(),
         name='revenue_stream_target'
         ),
-    
-    # path(
-    #     'value_centre_okr/<int:value_centre_id>/',
-    #     ValueCentreOKRListCreateAPIView.as_view(),
-    #     name='value_centre_okr'
-    #     ),
-    # path(
-    #     'filtered_value_centres_okrs/<int:company_id>/<str:period_type>/<str:year>',
-    #     FilteredValueCentresOKRSListAPIView.as_view(),
-    #     name='filtered_value_centres_okrs'
-    #     ),
-    # path(
-    #     'product_okr/<int:product_id>/',
-    #     ProductOKRListCreateAPIView.as_view(),
-    #     name='product_okr'
-    #     ),
-    # path(
-    #     'income_stream_okr/<int:income_stream_id>/',
-    #     IncomeStreamOKRListCreateAPIView.as_view(),
-    #     name='income_stream_okr'
-    #     ),
-    # path(
-    #     'revenue_stream_okr/<int:revenue_stream_id>/',
-    #     RevenueStreamOKRListCreateAPIView.as_view(),
-    #     name='revenue_stream_okr'
-    #     ),
-    # path(
-    #     'income_stream_trends/<int:income_stream_id>/<str:start>/<str:end>',
-    #     IncomeStreamTrends.as_view(),
-    #     name='income_stream_trends'
-    #     ),
-    # path(
-    #     'income_stream_card/<int:income_stream_id>/<str:start>/<str:end>',
-    #     IncomeStreamCard.as_view(),
-    #     name='income_stream_card'
-    #     ),
 ]

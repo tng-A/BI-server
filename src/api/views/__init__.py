@@ -1,5 +1,4 @@
 from .company import CompanyListCreateAPIView
-from .channel import ChannelListCreateAPIView
 from .value_centre import (
     ValueCentreListAPIView,
     ValueCentreListCreateAPIView
@@ -19,13 +18,6 @@ from .target import (
     ProductTargettListCreateAPIView,
     IncomeStreamTargetListCreateAPIView,
     RevenueStreamTargetListCreateAPIView
-)
-from .okr import (
-    RevenueStreamOKRListCreateAPIView,
-    ValueCentreOKRListCreateAPIView,
-    ProductOKRListCreateAPIView,
-    IncomeStreamOKRListCreateAPIView,
-    FilteredValueCentresOKRSListAPIView
 )
 from src.api.views.transaction import(
     TransactionListCreateAPIView,
