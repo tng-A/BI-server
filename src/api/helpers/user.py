@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from rest_framework_jwt.settings import api_settings
 
 def get_jwt_token(user):

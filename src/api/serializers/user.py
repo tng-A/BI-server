@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from src.api.models import User
+from src.api.models import User, Company
 from src.api.helpers.user import get_jwt_token
 
 
@@ -44,17 +44,24 @@ class RegistrationSerializer(serializers.ModelSerializer):
                        'a number and a special character.',
         })
     token = serializers.SerializerMethodField()
+    company = serializers.CharField(max_length=50)
 
     def get_token(self, obj):
+        obj.company_id = obj.company.id
         token = get_jwt_token(obj)
         return token
 
     class Meta:
         model = User
-        fields = ['email', 'token', 'password']
+        fields = ['email', 'token', 'password', 'company']
 
     def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
+        company_name = validated_data.pop('company')
+        try:
+            company = Company.objects.get(name=company_name)
+        except Company.DoesNotExist as BaseException:
+            raise serializers.ValidationError('Company does not exist')
+        return User.objects.create_user(company=company, **validated_data)
 
 
 class LoginSerializer(serializers.Serializer):
@@ -76,5 +83,6 @@ class LoginSerializer(serializers.Serializer):
         user = authenticate(email=email, password=password)
         if not user:
             raise serializers.ValidationError('Wrong email or password.')
-        data['token'] = get_jwt_token(user)
+        payload = User.objects.get(email=email)
+        data['token'] = get_jwt_token(payload)
         return data

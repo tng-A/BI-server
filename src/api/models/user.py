@@ -6,12 +6,14 @@ from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.hashers import make_password
 
 from src.api.models.base import CommonFieldsMixin
+from .company import Company
+
 
 class CustomUserManager(BaseUserManager):
     
-    def create_user(self, email, password=None):
+    def create_user(self, company, email, password=None):
         phash = make_password(password)
-        user = self.model(email=email, password=phash)
+        user = self.model(company=company, email=email, password=phash)
         user.save()
         return user
 
@@ -28,6 +30,13 @@ class User(AbstractBaseUser, PermissionsMixin, CommonFieldsMixin):
     email = models.EmailField(max_length=40, unique=True)
     active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        related_name='users',
+        null=True,
+        blank=True
+    )
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'

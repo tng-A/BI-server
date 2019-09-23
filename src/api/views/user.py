@@ -9,6 +9,7 @@ from src.api.serializers.user import (
     RegistrationSerializer,
     LoginSerializer
 )
+from src.api.models import Company
 
 
 class RegistrationAPIView(CreateAPIView):
