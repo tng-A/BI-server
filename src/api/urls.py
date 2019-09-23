@@ -6,6 +6,7 @@ from .views.metric import MetricListCreateAPIView
 urlpatterns = [
     path('company/', CompanyListCreateAPIView.as_view(), name='company'),
     path('period/', PeriodListAPIView.as_view(), name='period'),
+    path('nav/<int:company_id>/', NavItems.as_view(), name='nav'),
     path('value_centre/<int:company_id>/', ValueCentreListCreateAPIView.as_view(), name='value_centre'),
     path(
         'value_centre/<int:company_id>/<str:period_type>/<str:year>/',

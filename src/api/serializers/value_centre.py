@@ -34,4 +34,3 @@ class ValueCentreMinimalSerializer(serializers.ModelSerializer):
         
         model = ValueCentre
         fields = ['id', 'name', 'description', 'color']
-
