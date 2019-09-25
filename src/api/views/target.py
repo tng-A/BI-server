@@ -1,6 +1,5 @@
 """ Target views"""
 
-from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -23,17 +22,16 @@ from src.api.models import (
     RevenueStreamTarget,
     Period
 )
+from src.api.helpers.check_resource import resource_exists
 
 
 class IncomeStreamTargetListCreateAPIView(ListCreateAPIView):
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = IncomeStreamTargetSerializer
     queryset = IncomeStreamTarget.objects.all()
 
     def list(self, request, *args, **kwargs):
-        try:
-            income_stream = IncomeStream.objects.get(pk=kwargs['income_stream_id'])
-        except IncomeStream.DoesNotExist:
+        income_stream = resource_exists(IncomeStream, kwargs['income_stream_id'])
+        if not income_stream:
             message = 'IncomeStream does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         queryset = income_stream.targets.all()
@@ -42,9 +40,8 @@ class IncomeStreamTargetListCreateAPIView(ListCreateAPIView):
 
     
     def create(self, request, *args, **kwargs):
-        try:
-            income_stream = IncomeStream.objects.get(pk=kwargs['income_stream_id'])
-        except IncomeStream.DoesNotExist:
+        income_stream = resource_exists(IncomeStream, kwargs['income_stream_id'])
+        if not income_stream:
             message = 'IncomeStream does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         data = request.data
@@ -78,14 +75,12 @@ class IncomeStreamTargetListCreateAPIView(ListCreateAPIView):
 
 
 class RevenueStreamTargetListCreateAPIView(ListCreateAPIView):
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = RevenueStreamTargetSerializer
     queryset = RevenueStreamTarget.objects.all()
 
     def list(self, request, *args, **kwargs):
-        try:
-            revenue_stream = RevenueStream.objects.get(pk=self.kwargs['revenue_stream_id'])
-        except RevenueStream.DoesNotExist:
+        revenue_stream = resource_exists(RevenueStream, kwargs['revenue_stream_id'])
+        if not revenue_stream:
             message = 'RevenueStream does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         queryset = revenue_stream.targets.all()
@@ -94,9 +89,8 @@ class RevenueStreamTargetListCreateAPIView(ListCreateAPIView):
 
     
     def create(self, request, *args, **kwargs):
-        try:
-            revenue_stream = RevenueStream.objects.get(pk=self.kwargs['revenue_stream_id'])
-        except RevenueStream.DoesNotExist:
+        revenue_stream = resource_exists(RevenueStream, kwargs['revenue_stream_id'])
+        if not revenue_stream:
             message = 'RevenueStream does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         data = request.data
@@ -130,14 +124,12 @@ class RevenueStreamTargetListCreateAPIView(ListCreateAPIView):
 
 
 class ProductTargettListCreateAPIView(ListCreateAPIView):
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = ProductTargetSerializer
     queryset = ProductTarget.objects.all()
 
     def list(self, request, *args, **kwargs):
-        try:
-            product = Product.objects.get(pk=self.kwargs['product_id'])
-        except Product.DoesNotExist:
+        product = resource_exists(Product, kwargs['product_id'])
+        if not product:
             message = 'Product does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         queryset = product.targets.all()
@@ -145,9 +137,8 @@ class ProductTargettListCreateAPIView(ListCreateAPIView):
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
-        try:
-            product = Product.objects.get(pk=self.kwargs['product_id'])
-        except Product.DoesNotExist:
+        product = resource_exists(Product, kwargs['product_id'])
+        if not product:
             message = 'Product does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         data = request.data
@@ -181,14 +172,12 @@ class ProductTargettListCreateAPIView(ListCreateAPIView):
 
 
 class ValueCentreTargetListCreateAPIView(ListCreateAPIView):
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = ValueCentreTargetSerializer
     queryset = ValueCentreTarget.objects.all()
 
     def list(self, request, *args, **kwargs):
-        try:
-            value_centre = ValueCentre.objects.get(pk=self.kwargs['value_centre_id'])
-        except ValueCentre.DoesNotExist:
+        value_centre = resource_exists(ValueCentre, kwargs['value_centre_id'])
+        if not value_centre:
             message = 'ValueCentre does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         queryset = value_centre.targets.all()
@@ -196,9 +185,8 @@ class ValueCentreTargetListCreateAPIView(ListCreateAPIView):
         return Response(serializer.data)
     
     def create(self, request, *args, **kwargs):
-        try:
-            value_centre = ValueCentre.objects.get(pk=kwargs['value_centre_id'])
-        except ValueCentre.DoesNotExist:
+        value_centre = resource_exists(ValueCentre, kwargs['value_centre_id'])
+        if not value_centre:
             message = 'ValueCentre does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         data = request.data

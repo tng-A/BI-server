@@ -1,24 +1,21 @@
 """ Nav views"""
 
-from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-from rest_framework.authentication import TokenAuthentication
 
 from src.api.models import ValueCentre, Company, Product, RevenueStream, IncomeStream
 from src.api.serializers.nav import NavSerializer
+from src.api.helpers.check_resource import resource_exists
+
 
 class NavItems(ListAPIView):
-    authentication_classes = (JSONWebTokenAuthentication, TokenAuthentication,)
     serializer_class = NavSerializer
     queryset = ValueCentre.objects.all()
 
     def list(self, request, *args, **kwargs):
-        try:
-            company = Company.objects.get(pk=kwargs['company_id'])
-        except Company.DoesNotExist:
+        company = resource_exists(Company, kwargs['company_id'])
+        if not company:
             message = 'Company does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         value_centres = company.value_centres.all()

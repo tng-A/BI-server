@@ -1,6 +1,5 @@
 """ RevenueStream views"""
 
-from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.generics import (
     ListAPIView,
     CreateAPIView
@@ -15,18 +14,17 @@ from src.api.models import (
     Transaction
 )
 from src.api.helpers.transactions import IncomeStreamTransactionsFilter
+from src.api.helpers.check_resource import resource_exists
 
 
 class RevenueStreamListAPIView(ListAPIView):
     """ List revenue streams and transactions data"""
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = RevenueStreamSerializer
     queryset = RevenueStream.objects.all()
 
     def list(self, request, *args, **kwargs):
-        try:
-            product = Product.objects.get(pk=kwargs['product_id'])
-        except Product.DoesNotExist:
+        product = resource_exists(Product, kwargs['product_id'])
+        if not product:
             message = 'Product does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         revenue_streams = product.revenue_streams.all()
@@ -64,14 +62,12 @@ class RevenueStreamListAPIView(ListAPIView):
 
 class RevenueStreamCreateAPIView(CreateAPIView):
     """ Create a revenue stream"""
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = RevenueStreamSerializer
     queryset = RevenueStream.objects.all()
     
     def create(self, request, *args, **kwargs):
-        try:
-            product = Product.objects.get(pk=kwargs['product_id'])
-        except Product.DoesNotExist:
+        product = resource_exists(Product, kwargs['product_id'])
+        if not product:
             message = 'Product does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         data = request.data
