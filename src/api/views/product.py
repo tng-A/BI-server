@@ -1,6 +1,5 @@
 """ Product views"""
 
-from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.generics import ListAPIView, CreateAPIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -12,18 +11,17 @@ from src.api.models import (
     Transaction
 )
 from src.api.helpers.transactions import IncomeStreamTransactionsFilter
+from src.api.helpers.check_resource import resource_exists
 
 
 class ProductListAPIView(ListAPIView):
     """ List products and transactions data"""
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
 
     def list(self, request, *args, **kwargs):
-        try:
-            value_centre = ValueCentre.objects.get(pk=kwargs['value_centre_id'])
-        except ValueCentre.DoesNotExist:
+        value_centre = resource_exists(ValueCentre, kwargs['value_centre_id'])
+        if not value_centre:
             message = 'ValueCentre does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         products = value_centre.products.all()
@@ -61,14 +59,12 @@ class ProductListAPIView(ListAPIView):
 
 class ProductCreateAPIView(CreateAPIView):
     """ Create product"""
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
     
     def create(self, request, *args, **kwargs):
-        try:
-            value_centre = ValueCentre.objects.get(pk=kwargs['value_centre_id'])
-        except ValueCentre.DoesNotExist:
+        value_centre = resource_exists(ValueCentre, kwargs['value_centre_id'])
+        if not value_centre:
             message = 'ValueCentre does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         data = request.data

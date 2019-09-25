@@ -2,7 +2,6 @@
 
 import datetime
 
-from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -10,6 +9,7 @@ from rest_framework import status
 from src.api.serializers.income_stream import IncomeStreamSerializer
 from src.api.helpers.transactions import IncomeStreamTransactionsFilter
 from src.api.helpers.percentage import get_percentage
+from src.api.helpers.check_resource import resource_exists
 from src.api.models import (
     IncomeStream,
     RevenueStream,
@@ -20,14 +20,12 @@ from src.api.models import (
 class IncomeStreamListAPIView(ListAPIView):
     """ Get all incomestreams (eg Parking) in a
         revenue stream(eg Embu) and transactions info."""
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = IncomeStreamSerializer
     queryset = IncomeStream.objects.all()
 
     def list(self, request, *args, **kwargs):
-        try:
-            revenue_stream = RevenueStream.objects.get(pk=kwargs['revenue_stream_id'])
-        except RevenueStream.DoesNotExist:
+        revenue_stream = resource_exists(RevenueStream, kwargs['revenue_stream_id'])
+        if not revenue_stream:
             message = 'RevenueStream does not exist'
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         income_streams = revenue_stream.income_streams.all()
