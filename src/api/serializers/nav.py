@@ -18,30 +18,33 @@ class IncomeStreamMinimalSerializer(serializers.ModelSerializer):
 class RevenueStreamMinimalSerializer(serializers.ModelSerializer):
     """ RevenueStream model serializer"""
     income_stream = IncomeStreamMinimalSerializer(many=True)
+    visible_to = serializers.ListField()
 
     class Meta:
         """ Meta options"""
         
         model = RevenueStream
-        fields = ['id', 'name', 'description', 'color', 'income_stream']
+        fields = ['id', 'name', 'description', 'color', 'income_stream', 'visible_to']
 
 
 class ProductMinimalSerializer(serializers.ModelSerializer):
     """ Product model serializer"""
     revenue_stream = RevenueStreamMinimalSerializer(many=True)
+    visible_to = serializers.ListField()
 
     class Meta:
         """ Meta options"""
         
         model = Product
-        fields = ['id', 'name', 'description', 'color', 'revenue_stream']
+        fields = ['id', 'name', 'description', 'color', 'revenue_stream', 'visible_to']
 
 class NavSerializer(serializers.ModelSerializer):
     """ Nav serializer"""
     product = ProductMinimalSerializer(many=True)
+    visible_to = serializers.ListField()
     
     class Meta:
         """ Meta options"""
         
         model = ValueCentre
-        fields = ['id', 'name', 'description', 'color', 'product']
+        fields = ['id', 'name', 'description', 'color', 'product', 'visible_to']

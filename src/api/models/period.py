@@ -1,7 +1,7 @@
 """ Period Model"""
 
 from django.db import models
-
+from .company import Company
 
 class Period(models.Model):
     PERIOD_TYPES = (
@@ -22,6 +22,11 @@ class Period(models.Model):
     period_type = models.CharField(
         max_length=30,
         choices=PERIOD_TYPES, db_index=True)
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        related_name='periods'
+    )
 
     def __str__(self):
         return self.name

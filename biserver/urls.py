@@ -21,9 +21,9 @@ from rest_framework_swagger.views import get_swagger_view
 schema_view = get_swagger_view(title="BI Server")
 
 urlpatterns = [
-    path('grappelli/', include('grappelli.urls')),
+    path('jet_api/', include('jet_django.urls')),
     path('admin/', admin.site.urls),
     path('api/', include('src.api.urls')),
-
+    path('api/login', include('rest_framework.urls')),
     path('', schema_view),
 ]

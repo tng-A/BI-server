@@ -1,11 +1,13 @@
-from django.urls import path
+from django.urls import path, include
 from .views import *
 
 from .views.metric import MetricListCreateAPIView
 
 urlpatterns = [
+    path('register/', RegistrationAPIView.as_view(), name='register'),
+    path('login/', LoginGenericAPIView.as_view(), name='login'),
     path('company/', CompanyListCreateAPIView.as_view(), name='company'),
-    path('period/', PeriodListAPIView.as_view(), name='period'),
+    path('period/<int:company_id>/', PeriodListAPIView.as_view(), name='period'),
     path('nav/<int:company_id>/', NavItems.as_view(), name='nav'),
     path('value_centre/<int:company_id>/', ValueCentreListCreateAPIView.as_view(), name='value_centre'),
     path(
@@ -31,7 +33,7 @@ urlpatterns = [
     path('transaction/<int:revenue_stream_id>/', TransactionListCreateAPIView.as_view(), name='transaction'),
     path('product_transactions/<int:product_id>/', ProductTransactionsList.as_view(), name='product_transactions'),
     path('company_revenue_streams/<int:company_id>/', CompanyRevenueStreams.as_view(), name='company_revenue_streams'),
-    path('metric/', MetricListCreateAPIView.as_view(), name='metric'),    
+    path('metric/<int:company_id>/', MetricListCreateAPIView.as_view(), name='metric'),    
     path(
         'income_stream/<int:revenue_stream_id>/<str:period_type>/<str:year>/',
         IncomeStreamListAPIView.as_view(),
