@@ -21,12 +21,12 @@ setup(
         "django-rest-swagger==2.1.2",
         "gunicorn==19.9.0",
         "django-cors-middleware==1.4.0",
-        "jet-django==0.7.4",
         "whitenoise==4.1.3",
         "python-dateutil==2.8.0",
         "requests==2.22.0",
         "apscheduler==3.6.1",
         "django-cors-headers==3.1.0",
-        "djangorestframework-jwt==1.11.0"
+        "djangorestframework-jwt==1.11.0",
+        "django-grappelli==2.13.1"
     ]
 )
