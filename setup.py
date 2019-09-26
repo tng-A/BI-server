@@ -27,6 +27,6 @@ setup(
         "apscheduler==3.6.1",
         "django-cors-headers==3.1.0",
         "djangorestframework-jwt==1.11.0",
-        "django-grappelli=="
+        "django-grappelli==2.13.1"
     ]
 )
