@@ -13,3 +13,8 @@ from .revenue_stream import RevenueStream
 from .period import Period
 from .transaction import Transaction
 from .user import User
+from .features import (
+    Feature,
+    FeaturePermissions,
+    EnabledFeature
+)

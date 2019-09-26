@@ -25,12 +25,12 @@ class NavItems(ListAPIView):
                 value_centre=value_centre
             )
             for product in products:
-                product.visible_to =  ['value_centre_users']              
+                product.visible_to =  ['value_centre_users', 'company_users']              
                 revenue_streams = RevenueStream.objects.filter(
                 product=product
                 )
                 for revenue_stream in revenue_streams:
-                    revenue_stream.visible_to = ['product_users']              
+                    revenue_stream.visible_to = ['value_centre_users', 'company_users','product_users']              
                     income_streams = IncomeStream.objects.filter(
                         revenue_stream=revenue_stream
                     )
